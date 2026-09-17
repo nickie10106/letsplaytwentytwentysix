@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Our Planner</title>
   <link rel="stylesheet" href="style.css">
-  <script src ="app.js"></script>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -35,31 +34,25 @@
     </div>
   </div>
 
-  <!-- Main App Dashboard (Placeholder) -->
- <!-- Main App Dashboard -->
- <div id="main-view" class="view-container dashboard-view hidden">
+  <!-- Main App Dashboard -->
+  <div id="main-view" class="view-container dashboard-view hidden">
     
     <!-- Top Pink Card (Scoreboard) -->
     <div class="card pink-card">
         <div class="scoreboard">
-          
-          <!-- Profile M (Left) -->
           <div class="score-profile">
             <img src="./img/1.png" alt="Big Dino" class="score-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23d1d1d1\'/></svg>'">
             <div class="score-name">Big Dino</div>
             <div class="score-points" id="score-M">0</div>
           </div>
   
-          <!-- The 'VS' Badge -->
           <div class="vs-badge">VS</div>
   
-          <!-- Profile N (Right) -->
           <div class="score-profile">
             <img src="./img/2.png" alt="Ginger" class="score-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23d1d1d1\'/></svg>'">
             <div class="score-name">Ginger</div>
             <div class="score-points" id="score-N">0</div>
           </div>
-  
         </div>
       </div>
 
@@ -79,35 +72,31 @@
       <h3>Upcoming Events</h3>
       <hr>
     </div>
-    
-    <!-- Empty space where the database will inject upcoming events -->
-    <div id="upcoming-events-list" class="events-list">
-    </div>
+    <div id="upcoming-events-list" class="events-list"></div>
 
     <!-- Past Events Card -->
     <div class="card past-events-card">
       <div class="past-events-header">Past Events</div>
-      <div id="past-events-list" class="past-events-body">
-         <!-- Empty space where the database will inject completed events -->
-      </div>
+      <div id="past-events-list" class="past-events-body"></div>
     </div>
 
-   <!-- Floating Action Menu Container -->
-   <div class="fab-container">
-    <!-- The collapsible menu items -->
-    <div id="fab-menu" class="fab-menu">
-      <button class="fab-item" onclick="openEditEvent()" aria-label="Edit Events">
-        <i class="fa-solid fa-square-pen"></i>
-      </button>
-      <button class="fab-item" onclick="openAddEvent()" aria-label="Add Events">
-        <i class="fa-solid fa-calendar-plus"></i>
+    <!-- Floating Action Menu Container -->
+    <div class="fab-container">
+      <div id="fab-menu" class="fab-menu">
+        <button class="fab-item" onclick="openEditEvent()" aria-label="Edit Events">
+          <i class="fa-solid fa-square-pen"></i>
+        </button>
+        <button class="fab-item" onclick="openAddEvent()" aria-label="Add Events">
+          <i class="fa-solid fa-calendar-plus"></i>
+        </button>
+      </div>
+      <button id="fab-main-btn" class="fab-button" onclick="toggleFab()">
+        <i class="fa-solid fa-plus"></i>
       </button>
     </div>
-    <!-- The main toggle button -->
-    <button id="fab-main-btn" class="fab-button" onclick="toggleFab()">
-      <i class="fa-solid fa-plus"></i>
-    </button>
-  </div>
+
+  </div> <!-- CRITICAL FIX: This tag now correctly closes the main-view -->
+
   <!-- Add Event Screen -->
   <div id="add-event-view" class="view-container hidden">
     <div class="view-header">
@@ -116,7 +105,6 @@
     </div>
 
     <form id="add-event-form" onsubmit="saveEvent(event)">
-      
       <label for="event-name">Event Name</label>
       <input type="text" id="event-name" required placeholder="e.g. R Studio Comp">
 
@@ -156,6 +144,6 @@
     </form>
   </div>
     
-  </div>
+  <script src="app.js"></script>
 </body>
 </html>
