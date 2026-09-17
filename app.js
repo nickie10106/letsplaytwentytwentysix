@@ -186,3 +186,74 @@ function showDashboard(profileName) {
     // Fetch the live scores from Google Sheets
     loadScores();
   }
+
+  // Opens the form and hides the dashboard
+function openAddEvent() {
+    // Close the floating menu if it's open
+    document.getElementById("fab-menu").classList.remove("open");
+    document.getElementById("fab-main-btn").classList.remove("open");
+  
+    document.getElementById("main-view").classList.remove("active");
+    document.getElementById("main-view").classList.add("hidden");
+    
+    const addView = document.getElementById("add-event-view");
+    addView.classList.remove("hidden");
+    addView.classList.add("active");
+  }
+  
+  // Closes the form and returns to the dashboard
+  function closeAddEvent() {
+    document.getElementById("add-event-view").classList.remove("active");
+    document.getElementById("add-event-view").classList.add("hidden");
+    
+    const mainView = document.getElementById("main-view");
+    mainView.classList.remove("hidden");
+    mainView.classList.add("active");
+  }
+  
+  // Submits the new event to the SheetDB API
+  async function saveEvent(event) {
+    event.preventDefault(); // Prevents the page from refreshing
+    
+    const btn = document.getElementById("submit-event-btn");
+    btn.innerText = "Saving...";
+    btn.disabled = true;
+  
+    // Construct the object exactly matching your Google Sheet headers
+    const newRowData = {
+      date: document.getElementById("event-date").value,
+      time: document.getElementById("event-time").value,
+      timezone: document.getElementById("event-timezone").value,
+      event_name: document.getElementById("event-name").value,
+      event_type: document.getElementById("event-type").value,
+      points_worth: document.getElementById("event-points").value,
+      winner: "" // Left blank!
+    };
+  
+    try {
+      // Note: SHEETDB_URL is defined at the top of your file
+      // We append ?sheet=Events so it goes to the correct tab
+      const response = await fetch(`${SHEETDB_URL}?sheet=Events`, {
+        method: "POST",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ data: [newRowData] }) 
+      });
+  
+      if (response.ok) {
+        document.getElementById("add-event-form").reset();
+        closeAddEvent();
+        // Optionally, you can trigger a function here to refresh the Events list on the dashboard
+      } else {
+        alert("Failed to save. Check your connection.");
+      }
+    } catch (error) {
+      console.error("Error saving event:", error);
+      alert("Error connecting to database.");
+    } finally {
+      btn.innerText = "Save Event";
+      btn.disabled = false;
+    }
+  }

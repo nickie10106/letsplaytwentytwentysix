@@ -171,9 +171,8 @@
   .score-img {
     width: 70px; /* Adjust this to make the images wider or narrower */
     height: auto; /* Allows the image to keep its natural rectangular shape */
-    max-height: 85px; /* Prevents very tall images from stretching the pink box too much */
+    max-height: 95px; /* Prevents very tall images from stretching the pink box too much */
     border-radius: 4px; /* Gives slightly softened corners (change to 0 for perfectly sharp edges) */
-    border: 2px solid #000; /* Keeps the black outline to match the app's overall style */
     object-fit: contain; /* Ensures the entire image is visible without cropping */
     margin-bottom: 5px;
   }
@@ -327,3 +326,67 @@
   /* Rotates the '+' into an 'x' when the menu is open */
   .fab-button.open {
     transform: rotate(45deg);}
+
+    /* --- Add Event Form --- */
+.view-header {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 25px;
+  }
+  
+  .back-btn {
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    color: #555;
+    cursor: pointer;
+    padding: 0;
+    margin-right: auto;
+  }
+  
+  .view-header h2 {
+    margin: 0;
+    flex-grow: 1;
+    text-align: right;
+  }
+  
+  form {
+    width: 100%;
+    text-align: left;
+  }
+  
+  label {
+    display: block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    margin-top: 15px;
+  }
+  
+  input, select {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px; /* 16px prevents iOS auto-zoom */
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #fff;
+    outline: none;
+  }
+  
+  input:focus, select:focus {
+    border-color: #000;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 15px;
+  }
+  
+  .form-group {
+    flex: 1;
+  }
+  
+  .w-100 {
+    width: 100%;
+  }

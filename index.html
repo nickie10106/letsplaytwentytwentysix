@@ -39,7 +39,6 @@
  <!-- Main App Dashboard -->
  <div id="main-view" class="view-container dashboard-view hidden">
     
-    <!-- Top Pink Card (For Scores or Dual Timezones later) -->
     <!-- Top Pink Card (Scoreboard) -->
     <div class="card pink-card">
         <div class="scoreboard">
@@ -108,6 +107,53 @@
     <button id="fab-main-btn" class="fab-button" onclick="toggleFab()">
       <i class="fa-solid fa-plus"></i>
     </button>
+  </div>
+  <!-- Add Event Screen -->
+  <div id="add-event-view" class="view-container hidden">
+    <div class="view-header">
+      <button class="back-btn" onclick="closeAddEvent()"><i class="fa-solid fa-chevron-left"></i> Back</button>
+      <h2>New Event</h2>
+    </div>
+
+    <form id="add-event-form" onsubmit="saveEvent(event)">
+      
+      <label for="event-name">Event Name</label>
+      <input type="text" id="event-name" required placeholder="e.g. R Studio Comp">
+
+      <label for="event-type">Event Type</label>
+      <select id="event-type" required>
+        <option value="Competition">Competition</option>
+        <option value="Lesson">Lesson</option>
+        <option value="Activity">Activity</option>
+      </select>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="event-date">Date</label>
+          <input type="date" id="event-date" required>
+        </div>
+        <div class="form-group">
+          <label for="event-time">Time</label>
+          <input type="time" id="event-time" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="event-timezone">Timezone</label>
+          <select id="event-timezone" required>
+            <option value="SG">Singapore (SG)</option>
+            <option value="LON">London (LON)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="event-points">Points Worth</label>
+          <input type="number" id="event-points" required min="0" value="0">
+        </div>
+      </div>
+
+      <button type="submit" id="submit-event-btn" class="btn-primary w-100" style="margin-top: 20px;">Save Event</button>
+    </form>
   </div>
     
   </div>
