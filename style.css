@@ -412,13 +412,13 @@
   }
 
   #submit-event-btn {
-    background-color: #007aff; /* A bright, clean blue */
+    background-color: #CAE5EE; /* A bright, clean blue */
     color: #ffffff;
     border: none;
   }
   
   #submit-event-btn:active {
-    background-color: #005bb5; /* Slightly darker blue when tapped */
+    background-color: #CAD8EE; /* Slightly darker blue when tapped */
   }
 
   /* --- Upcoming Event Cards --- */
