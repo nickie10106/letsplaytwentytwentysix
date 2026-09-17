@@ -226,9 +226,10 @@ async function loadEvents() {
         // Note: We use the index or a unique ID to know which row to delete/update later
         const cardHTML = `
           <div class="event-card">
-            <button class="delete-btn" onclick="deleteEvent(${index})">
-              <i class="fa-solid fa-trash"></i>
+            <button class="delete-btn" onclick="deleteEvent('${row.event_name}')">
+            <i class="fa-solid fa-trash"></i>
             </button>
+            <button class="claim-btn" onclick="claimPoints('${row.event_name}', ${row.points_worth}, this)">Claim</button>
             
             <div class="event-details">
               <h4>${row.event_name} <span class="points-badge">+${row.points_worth} pts</span></h4>
@@ -247,11 +248,78 @@ async function loadEvents() {
     }
   }
   
-  // Placeholder functions for the buttons (we will build the SheetDB logic for these next)
-  function deleteEvent(index) {
-    alert("Delete event clicked for item " + index);
+// --- DATABASE: DELETE EVENT ---
+async function deleteEvent(eventName) {
+    // Adds a safety check so you don't accidentally delete something
+    if (!confirm(`Are you sure you want to delete "${eventName}"?`)) return;
+  
+    try {
+      // Tells SheetDB to find the row where event_name matches, and delete it
+      const response = await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
+        method: "DELETE",
+        headers: { "Accept": "application/json" }
+      });
+  
+      if (response.ok) {
+        loadEvents(); // Instantly reloads the dashboard to remove the card
+      } else {
+        alert("Failed to delete. Check your connection.");
+      }
+    } catch (error) {
+      console.error("Error deleting event:", error);
+    }
   }
   
-  function claimPoints(index) {
-    alert("Claim points clicked for item " + index);
+  // --- DATABASE: CLAIM POINTS ---
+  async function claimPoints(eventName, pointsWorth, btnElement) {
+    // Verifies you are assigning the points to the person currently logged in
+    if (!confirm(`Claim ${pointsWorth} points for ${currentSelectedProfile}?`)) return;
+  
+    // Visual feedback while the database updates
+    btnElement.innerText = "Claiming...";
+    btnElement.disabled = true;
+  
+    try {
+      // STEP 1: Update the Events sheet to mark the current user as the winner
+      await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
+        method: "PATCH",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ data: { winner: currentSelectedProfile } })
+      });
+  
+      // STEP 2: Fetch the current score for this user from the Scores tab
+      const scoreRes = await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`);
+      const scoreData = await scoreRes.json();
+      
+      let currentScore = 0;
+      if (scoreData && scoreData.length > 0) {
+        currentScore = parseInt(scoreData[0].score) || 0;
+      }
+      
+      // Calculate the new total
+      const newScore = currentScore + parseInt(pointsWorth);
+  
+      // STEP 3: Save the new total score back to the Scores tab
+      await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`, {
+        method: "PATCH",
+        headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ data: { score: newScore } })
+      });
+  
+      // STEP 4: Refresh the UI to show the new score and remove the claimed event
+      loadScores();
+      loadEvents(); 
+      
+    } catch (error) {
+      console.error("Error claiming points:", error);
+      alert("Something went wrong updating the database.");
+      btnElement.innerText = "Claim";
+      btnElement.disabled = false;
+    }
   }
