@@ -147,55 +147,76 @@
     box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
   }
   
- /* --- Scoreboard (Pink Card) --- */
+/* --- Scoreboard (Pink Card) --- */
 .pink-card {
     background-color: #f7c3c3; 
     padding: 15px;
-    height: auto; 
-  }
-  
-  .scoreboard {
+    height: 90px; /* Fixed height to match the new layout */
+    position: relative; /* Allows images to position themselves relative to this box */
+    margin-top: 60px; /* Leaves space above for heads popping out */
+    margin-bottom: 40px; /* Leaves space below for the guitar/bodies */
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    width: 100%;
+    overflow: visible; /* Critical: allows images to spill outside the borders */
   }
   
-  .score-profile {
+  /* Freely floating Left Image (Big Dino) */
+  .score-img-left {
+    position: absolute;
+    left: -20px; /* Pulls it past the left edge */
+    bottom: -35px; /* Pulls it past the bottom edge */
+    height: 180px; /* Make it large enough to break out */
+    width: auto;
+    z-index: 10; /* Ensures it sits on top of everything */
+    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2)); /* Adds a nice shadow to the pop-out */
+  }
+  
+  /* Freely floating Right Image (Ginger) */
+  .score-img-right {
+    position: absolute;
+    right: -10px; /* Pulls it past the right edge */
+    bottom: -20px;
+    height: 145px;
+    width: auto;
+    z-index: 10;
+    filter: drop-shadow(2px 4px 4px rgba(0,0,0,0.2));
+  }
+  
+  /* The centered text container */
+  .scoreboard-text {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    width: 50%; /* Keeps text centered between the images */
+    z-index: 5;
+  }
+  
+  .score-column {
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: 40%;
-  }
-  
-  .score-img {
-    width: 70px; /* Adjust this to make the images wider or narrower */
-    height: auto; /* Allows the image to keep its natural rectangular shape */
-    max-height: 95px; /* Prevents very tall images from stretching the pink box too much */
-    object-fit: contain; /* Ensures the entire image is visible without cropping */
-    margin-bottom: 5px;
   }
   
   .score-name {
-    font-weight: bold;
+    font-weight: 800; /* Extra bold like the reference image */
     font-size: 14px;
   }
   
   .score-points {
-    font-size: 24px;
-    font-weight: 900;
-  }
-  
-  .vs-badge {
     font-size: 18px;
     font-weight: 900;
-    font-style: italic;
-    color: #fff;
-    background-color: #000;
-    padding: 5px 10px;
-    border-radius: 8px;
+    margin-top: -2px; /* Pulls the number slightly closer to the name */
   }
   
+  .vs-text {
+    font-size: 14px;
+    font-weight: 900;
+    color: #000;
+  }
+  
+  /* --- green card ---*/
   .green-card {
     background-color: #badcc2;
   }
@@ -388,4 +409,14 @@
   
   .w-100 {
     width: 100%;
+  }
+
+  #submit-event-btn {
+    background-color: #007aff; /* A bright, clean blue */
+    color: #ffffff;
+    border: none;
+  }
+  
+  #submit-event-btn:active {
+    background-color: #005bb5; /* Slightly darker blue when tapped */
   }

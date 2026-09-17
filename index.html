@@ -37,24 +37,31 @@
   <!-- Main App Dashboard -->
   <div id="main-view" class="view-container dashboard-view hidden">
     
-    <!-- Top Pink Card (Scoreboard) -->
-    <div class="card pink-card">
-        <div class="scoreboard">
-          <div class="score-profile">
-            <img src="./img/1.png" alt="Big Dino" class="score-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23d1d1d1\'/></svg>'">
-            <div class="score-name">Big Dino</div>
-            <div class="score-points" id="score-M">0</div>
-          </div>
-  
-          <div class="vs-badge">VS</div>
-  
-          <div class="score-profile">
-            <img src="./img/2.png" alt="Ginger" class="score-img" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'><rect width=\'100\' height=\'100\' fill=\'%23d1d1d1\'/></svg>'">
-            <div class="score-name">Ginger</div>
-            <div class="score-points" id="score-N">0</div>
-          </div>
-        </div>
+<!-- Top Pink Card (Scoreboard) -->
+<div class="card pink-card">
+      
+    <!-- Left Image (Floats freely) -->
+    <img src="./img/1.png" alt="Big Dino" class="score-img-left" onerror="this.style.display='none'">
+
+    <!-- Centered Text Area -->
+    <div class="scoreboard-text">
+      <div class="score-column">
+        <div class="score-name">Big Dino</div>
+        <div class="score-points" id="score-M">0</div>
       </div>
+
+      <div class="vs-text">VS</div>
+
+      <div class="score-column">
+        <div class="score-name">Ginger</div>
+        <div class="score-points" id="score-N">0</div>
+      </div>
+    </div>
+
+    <!-- Right Image (Floats freely) -->
+    <img src="./img/2.png" alt="Ginger" class="score-img-right" onerror="this.style.display='none'">
+    
+  </div>
 
     <!-- Green Countdown Card -->
     <div class="card green-card">
