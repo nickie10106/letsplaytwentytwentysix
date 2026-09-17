@@ -75,8 +75,23 @@ function logout() {
   profileView.classList.add("active");
 }
 
-// Opens the modal or view to add a new event
-function openAddEvent() {
+// Toggles the floating action menu open and closed
+function toggleFab() {
+    const menu = document.getElementById("fab-menu");
+    const mainBtn = document.getElementById("fab-main-btn");
+    
+    menu.classList.toggle("open");
+    mainBtn.classList.toggle("open");
+  }
+  
+  // Opens the Add Event view
+  function openAddEvent() {
+    toggleFab(); // Close the menu when an option is clicked
     alert("This will open the Add Event form!"); 
-    // We will build the Add Event view next!
+  }
+  
+  // Opens the Edit Event view
+  function openEditEvent() {
+    toggleFab(); 
+    alert("This will open the Edit Event list!"); 
   }

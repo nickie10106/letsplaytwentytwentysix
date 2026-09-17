@@ -67,8 +67,22 @@
       </div>
     </div>
 
-    <!-- Floating Add Button -->
-    <button class="fab-button" onclick="openAddEvent()">+</button>
+   <!-- Floating Action Menu Container -->
+   <div class="fab-container">
+    <!-- The collapsible menu items -->
+    <div id="fab-menu" class="fab-menu">
+      <button class="fab-item" onclick="openEditEvent()" aria-label="Edit Events">
+        <i class="fa-solid fa-square-pen"></i>
+      </button>
+      <button class="fab-item" onclick="openAddEvent()" aria-label="Add Events">
+        <i class="fa-solid fa-calendar-plus"></i>
+      </button>
+    </div>
+    <!-- The main toggle button -->
+    <button id="fab-main-btn" class="fab-button" onclick="toggleFab()">
+      <i class="fa-solid fa-plus"></i>
+    </button>
+  </div>
     
   </div>
 </body>
