@@ -169,13 +169,12 @@
   }
   
   .score-img {
-    width: 60px; /* Locks the size */
-    height: 60px; 
-    max-width: 100%; /* Prevents mobile stretching */
-    border-radius: 50%; /* Makes them perfect circles */
-    border: 2px solid #000;
-    object-fit: cover; /* Crops the image so it doesn't squish */
-    background-color: #fff;
+    width: 70px; /* Adjust this to make the images wider or narrower */
+    height: auto; /* Allows the image to keep its natural rectangular shape */
+    max-height: 85px; /* Prevents very tall images from stretching the pink box too much */
+    border-radius: 4px; /* Gives slightly softened corners (change to 0 for perfectly sharp edges) */
+    border: 2px solid #000; /* Keeps the black outline to match the app's overall style */
+    object-fit: contain; /* Ensures the entire image is visible without cropping */
     margin-bottom: 5px;
   }
   

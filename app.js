@@ -1,3 +1,5 @@
+const SHEETDB_URL = "https://sheetdb.io/api/v1/kolk6lmwxwxwk"
+
 // Hardcoded PINs for this simple setup
 const PIN_M = "2003";
 const PIN_N = "2000";
@@ -145,4 +147,42 @@ function startCountdown() {
   
     // Start the countdown when the dashboard appears
     startCountdown();
+  }
+
+  // Add this function to fetch and display the scores
+async function loadScores() {
+    try {
+      // Append ?sheet=Scores to tell the API specifically which tab to read
+      const response = await fetch(`${SHEETDB_URL}?sheet=Scores`);
+      const data = await response.json();
+  
+      // The data comes back as an array of rows: 
+      // e.g., [{profile: "M", score: "10"}, {profile: "N", score: "15"}]
+      data.forEach(row => {
+        if (row.profile === "M") {
+          document.getElementById("score-M").innerText = row.score;
+        } else if (row.profile === "N") {
+          document.getElementById("score-N").innerText = row.score;
+        }
+      });
+    } catch (error) {
+      console.error("Error fetching scores:", error);
+      // You can optionally add a fallback here, like showing "-" if offline
+    }
+  }
+
+  // Update your existing showDashboard function
+function showDashboard(profileName) {
+    document.getElementById("profile-view").classList.remove("active");
+    document.getElementById("profile-view").classList.add("hidden");
+    
+    const mainView = document.getElementById("main-view");
+    mainView.classList.remove("hidden");
+    mainView.classList.add("active");
+    
+    // Start the countdown clock
+    startCountdown();
+    
+    // Fetch the live scores from Google Sheets
+    loadScores();
   }
