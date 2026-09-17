@@ -420,3 +420,78 @@
   #submit-event-btn:active {
     background-color: #005bb5; /* Slightly darker blue when tapped */
   }
+
+  /* --- Upcoming Event Cards --- */
+.event-card {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 1px solid #000;
+    border-radius: 8px;
+    padding: 12px;
+    margin-bottom: 12px;
+    box-shadow: 1px 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden; /* Keeps the sliding button neat */
+  }
+  
+  .event-details {
+    flex-grow: 1;
+    text-align: left;
+  }
+  
+  .event-details h4 {
+    font-size: 15px;
+    margin: 0 0 4px 0;
+  }
+  
+  .event-details p {
+    font-size: 12px;
+    color: #555;
+    margin: 0;
+  }
+  
+  .points-badge {
+    font-size: 11px;
+    background-color: #fcebc4;
+    padding: 2px 6px;
+    border-radius: 8px;
+    border: 1px solid #000;
+    margin-left: 5px;
+  }
+  
+  /* --- Claim Button --- */
+  .claim-btn {
+    background-color: #000;
+    color: #fff;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 16px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  
+  /* --- Edit Mode & Delete Button --- */
+  .delete-btn {
+    background-color: var(--error-color);
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 35px;
+    
+    /* Hidden by default with 0 width */
+    width: 0;
+    opacity: 0;
+    padding: 0;
+    margin-right: 0;
+    transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+  }
+  
+  /* When the parent list has the 'edit-mode' class, expand the button */
+  .edit-mode .delete-btn {
+    width: 35px;
+    opacity: 1;
+    margin-right: 12px;
+  }

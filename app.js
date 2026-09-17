@@ -77,6 +77,7 @@ function showDashboard(profileName) {
   
   startCountdown();
   loadScores();
+  loadEvents();
 }
 
 // --- FLOATING ACTION MENU ---
@@ -109,9 +110,12 @@ function closeAddEvent() {
 }
 
 function openEditEvent() {
-  toggleFab(); 
-  alert("This will open the Edit Event list! (We will build this next)"); 
-}
+    toggleFab(); // Close the floating menu
+    
+    // Toggle the 'edit-mode' class on the events list container
+    const eventsList = document.getElementById("upcoming-events-list");
+    eventsList.classList.toggle("edit-mode");
+  }
 
 // --- COUNTDOWN LOGIC ---
 function startCountdown() {
@@ -198,3 +202,56 @@ async function saveEvent(event) {
     btn.disabled = false;
   }
 }
+
+async function loadEvents() {
+    const eventsList = document.getElementById("upcoming-events-list");
+    eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
+  
+    try {
+      const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
+      const data = await response.json();
+  
+      eventsList.innerHTML = ""; // Clear loading text
+  
+      // Filter to only show events that don't have a winner yet
+      const activeEvents = data.filter(row => row.winner === "");
+  
+      if (activeEvents.length === 0) {
+        eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>No upcoming events.</p>";
+        return;
+      }
+  
+      // Loop through the data and build a card for each event
+      activeEvents.forEach((row, index) => {
+        // Note: We use the index or a unique ID to know which row to delete/update later
+        const cardHTML = `
+          <div class="event-card">
+            <button class="delete-btn" onclick="deleteEvent(${index})">
+              <i class="fa-solid fa-trash"></i>
+            </button>
+            
+            <div class="event-details">
+              <h4>${row.event_name} <span class="points-badge">+${row.points_worth} pts</span></h4>
+              <p>${row.date} @ ${row.time} (${row.timezone})</p>
+            </div>
+            
+            <button class="claim-btn" onclick="claimPoints(${index})">Claim</button>
+          </div>
+        `;
+        eventsList.innerHTML += cardHTML;
+      });
+  
+    } catch (error) {
+      console.error("Error fetching events:", error);
+      eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
+    }
+  }
+  
+  // Placeholder functions for the buttons (we will build the SheetDB logic for these next)
+  function deleteEvent(index) {
+    alert("Delete event clicked for item " + index);
+  }
+  
+  function claimPoints(index) {
+    alert("Claim points clicked for item " + index);
+  }
