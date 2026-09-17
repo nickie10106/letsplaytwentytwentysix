@@ -74,3 +74,9 @@ function logout() {
   profileView.classList.remove("hidden");
   profileView.classList.add("active");
 }
+
+// Opens the modal or view to add a new event
+function openAddEvent() {
+    alert("This will open the Add Event form!"); 
+    // We will build the Add Event view next!
+  }

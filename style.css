@@ -128,3 +128,108 @@
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  /* --- Dashboard Layout & Alignment --- */
+.dashboard-view {
+    justify-content: flex-start; /* Aligns items to the top instead of center */
+    position: relative; 
+    padding-top: 40px;
+    min-height: 100vh;
+  }
+  
+  /* --- Dashboard Cards --- */
+  .card {
+    width: 100%;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    border: 1px solid #000; /* Dark border from the design */
+    box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
+  }
+  
+  .pink-card {
+    background-color: #f7c3c3; 
+    height: 100px; /* Adjust height once you put content inside */
+  }
+  
+  .green-card {
+    background-color: #badcc2;
+  }
+  
+  .green-card h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0;
+  }
+  
+  /* --- Typography & Sections --- */
+  .section-header {
+    width: 100%;
+    text-align: left;
+    margin-bottom: 15px;
+  }
+  
+  .section-header h3 {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+  
+  .section-header hr {
+    border: none;
+    border-top: 1px solid #000;
+  }
+  
+  .events-list {
+    width: 100%;
+    min-height: 100px; 
+    margin-bottom: 20px;
+  }
+  
+  /* --- Past Events Composite Card --- */
+  .past-events-card {
+    background-color: #fff;
+    padding: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    min-height: 180px;
+  }
+  
+  .past-events-header {
+    background-color: #fcebc4; /* Yellowish header */
+    padding: 10px 15px;
+    font-size: 14px;
+    font-weight: bold;
+    border-bottom: 1px solid #000;
+  }
+  
+  .past-events-body {
+    padding: 15px;
+  }
+  
+  /* --- Floating Action Button (+) --- */
+  .fab-button {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    background-color: #cbe6e6; /* Light blue */
+    border: 1px solid #000;
+    font-size: 32px;
+    font-weight: normal;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 2px 4px 6px rgba(0,0,0,0.15);
+    cursor: pointer;
+    z-index: 100;
+    color: #000;
+    padding: 0; /* overrides previous button padding */
+  }
+  
+  .fab-button:active {
+    transform: scale(0.95);
+  }

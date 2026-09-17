@@ -35,12 +35,41 @@
   </div>
 
   <!-- Main App Dashboard (Placeholder) -->
-  <div id="main-view" class="view-container hidden">
-    <h1 id="welcome-message">Welcome!</h1>
-    <p>The gamified planner dashboard will go here.</p>
-    <button onclick="logout()" class="btn-secondary">Log Out</button>
-  </div>
+ <!-- Main App Dashboard -->
+ <div id="main-view" class="view-container dashboard-view hidden">
+    
+    <!-- Top Pink Card (For Scores or Dual Timezones later) -->
+    <div class="card pink-card">
+      <!-- Content goes here -->
+    </div>
 
-  <script src="js/app.js"></script>
+    <!-- Green Countdown Card -->
+    <div class="card green-card">
+      <h3>Countdown till we meet again</h3>
+      <!-- We can add a live JavaScript timer here later -->
+    </div>
+
+    <!-- Upcoming Events Section -->
+    <div class="section-header">
+      <h3>Upcoming Events</h3>
+      <hr>
+    </div>
+    
+    <!-- Empty space where the database will inject upcoming events -->
+    <div id="upcoming-events-list" class="events-list">
+    </div>
+
+    <!-- Past Events Card -->
+    <div class="card past-events-card">
+      <div class="past-events-header">Past Events</div>
+      <div id="past-events-list" class="past-events-body">
+         <!-- Empty space where the database will inject completed events -->
+      </div>
+    </div>
+
+    <!-- Floating Add Button -->
+    <button class="fab-button" onclick="openAddEvent()">+</button>
+    
+  </div>
 </body>
 </html>
