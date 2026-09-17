@@ -169,11 +169,12 @@
   }
   
   .score-img {
-    width: 60px;
-    height: 60px;
-    border-radius: 50%;
+    width: 60px; /* Locks the size */
+    height: 60px; 
+    max-width: 100%; /* Prevents mobile stretching */
+    border-radius: 50%; /* Makes them perfect circles */
     border: 2px solid #000;
-    object-fit: cover;
+    object-fit: cover; /* Crops the image so it doesn't squish */
     background-color: #fff;
     margin-bottom: 5px;
   }
