@@ -227,19 +227,18 @@ async function loadEvents() {
         const safeName = encodeURIComponent(row.event_name);
         const cardHTML = `
           <div class="event-card">
-            <button class="delete-btn" onclick="deleteEvent('${row.event_name}')">
-            <i class="fa-solid fa-trash"></i>
+            <button class="delete-btn" onclick="deleteEvent('${safeName}')">
+              <i class="fa-solid fa-trash"></i>
             </button>
-            <button class="claim-btn" onclick="claimPoints('${row.event_name}', ${row.points_worth}, this)">Claim</button>
             
             <div class="event-details">
               <h4>${row.event_name} <span class="points-badge">+${row.points_worth} pts</span></h4>
               <p>${row.date} @ ${row.time} (${row.timezone})</p>
             </div>
             
-            <button class="claim-btn" onclick="claimPoints(${index})">Claim</button>
+            <button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">Claim</button>
           </div>
-       `;
+        `;
         eventsList.innerHTML += cardHTML;
       });
   
