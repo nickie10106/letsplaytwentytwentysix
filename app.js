@@ -224,6 +224,7 @@ async function loadEvents() {
       // Loop through the data and build a card for each event
       activeEvents.forEach((row, index) => {
         // Note: We use the index or a unique ID to know which row to delete/update later
+        const safeName = encodeURIComponent(row.event_name);
         const cardHTML = `
           <div class="event-card">
             <button class="delete-btn" onclick="deleteEvent('${row.event_name}')">
@@ -238,7 +239,7 @@ async function loadEvents() {
             
             <button class="claim-btn" onclick="claimPoints(${index})">Claim</button>
           </div>
-       ` ;
+       `;
         eventsList.innerHTML += cardHTML;
       });
   
