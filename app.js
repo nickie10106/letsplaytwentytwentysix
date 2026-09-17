@@ -95,3 +95,54 @@ function toggleFab() {
     toggleFab(); 
     alert("This will open the Edit Event list!"); 
   }
+
+  // --- Countdown Timer Logic ---
+function startCountdown() {
+    // Target: Jan 8, 2027 at 07:00 AM London Time (GMT)
+    // "Z" indicates UTC/GMT time.
+    const targetDate = new Date("2027-01-08T07:00:00Z").getTime();
+  
+    // Update the countdown every 1 second (1000 milliseconds)
+    const timer = setInterval(function() {
+      const now = new Date().getTime();
+      const distance = targetDate - now;
+  
+      // If the countdown is finished, stop the timer and display a message
+      if (distance < 0) {
+        clearInterval(timer);
+        document.getElementById("countdown-display").innerHTML = "<div style='width:100%; text-align:center;'>We are together! 🎉</div>";
+        return;
+      }
+  
+      // Time calculations for days, hours, minutes and seconds
+      const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+  
+      // Inject the calculated numbers into the HTML, padding single digits with a zero
+      document.getElementById("cd-days").innerText = String(days).padStart(2, '0');
+      document.getElementById("cd-hours").innerText = String(hours).padStart(2, '0');
+      document.getElementById("cd-minutes").innerText = String(minutes).padStart(2, '0');
+      document.getElementById("cd-seconds").innerText = String(seconds).padStart(2, '0');
+      
+    }, 1000);
+  }
+  
+  // Modify your existing showDashboard function to start the countdown when the dashboard loads
+  function showDashboard(profileName) {
+    document.getElementById("profile-view").classList.remove("active");
+    document.getElementById("profile-view").classList.add("hidden");
+    
+    const mainView = document.getElementById("main-view");
+    mainView.classList.remove("hidden");
+    mainView.classList.add("active");
+    
+    // Make sure you have a <h1 id="welcome-message"> in your HTML if you want to keep this line
+    if(document.getElementById("welcome-message")) {
+      document.getElementById("welcome-message").innerText = `Welcome back, ${profileName}!`;
+    }
+  
+    // Start the countdown when the dashboard appears
+    startCountdown();
+  }
