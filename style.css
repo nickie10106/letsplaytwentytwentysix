@@ -147,9 +147,55 @@
     box-shadow: 2px 4px 6px rgba(0,0,0,0.1);
   }
   
-  .pink-card {
+ /* --- Scoreboard (Pink Card) --- */
+.pink-card {
     background-color: #f7c3c3; 
-    height: 100px; /* Adjust height once you put content inside */
+    padding: 15px;
+    height: auto; 
+  }
+  
+  .scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+  
+  .score-profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 40%;
+  }
+  
+  .score-img {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 2px solid #000;
+    object-fit: cover;
+    background-color: #fff;
+    margin-bottom: 5px;
+  }
+  
+  .score-name {
+    font-weight: bold;
+    font-size: 14px;
+  }
+  
+  .score-points {
+    font-size: 24px;
+    font-weight: 900;
+  }
+  
+  .vs-badge {
+    font-size: 18px;
+    font-weight: 900;
+    font-style: italic;
+    color: #fff;
+    background-color: #000;
+    padding: 5px 10px;
+    border-radius: 8px;
   }
   
   .green-card {
