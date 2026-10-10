@@ -223,7 +223,7 @@ async function loadEvents() {
   
       // Loop through the data and build a card for each event
       activeEvents.forEach((row, index) => {
-        // Note: We use the index or a unique ID to know which row to delete/update later
+        // Note: use the index or a unique ID to know which row to delete/update later
         const safeName = encodeURIComponent(row.event_name);
         const cardHTML = `
           <div class="event-card">
@@ -280,7 +280,7 @@ async function deleteEvent(eventName) {
     btnElement.disabled = true;
   
     try {
-      // STEP 1: Update the Events sheet to mark the current user as the winner
+      // STEP 1: Update the Events sheet to mark the as the winner
       await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
         method: "PATCH",
         headers: {
@@ -290,7 +290,7 @@ async function deleteEvent(eventName) {
         body: JSON.stringify({ data: { winner: currentSelectedProfile } })
       });
   
-      // STEP 2: Fetch the current score for this user from the Scores tab
+      // STEP 2: Fetch the current score from the Scores tab
       const scoreRes = await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`);
       const scoreData = await scoreRes.json();
       
