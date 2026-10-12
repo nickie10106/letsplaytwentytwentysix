@@ -76,9 +76,39 @@ function showDashboard(profileName) {
   mainView.classList.add("active");
   
   startCountdown();
-  updateStats(); // Runs day counter immediately
+  updateStats();
   loadScores();
   loadEvents();
+}
+
+// --- SWITCH TAB ---
+function switchTab(tabName) {
+  closeAllForms();
+  
+  const mainView = document.getElementById("main-view");
+  const booksView = document.getElementById("books-view");
+
+  if (tabName === 'books') {
+    if (mainView) {
+      mainView.classList.add("hidden");
+      mainView.classList.remove("active");
+    }
+    if (booksView) {
+      booksView.classList.remove("hidden");
+      booksView.classList.add("active");
+    }
+    loadBooks();
+  } else if (tabName === 'home') {
+    if (booksView) {
+      booksView.classList.add("hidden");
+      booksView.classList.remove("active");
+    }
+    if (mainView) {
+      mainView.classList.remove("hidden");
+      mainView.classList.add("active");
+    }
+    loadEvents();
+  }
 }
 
 // --- FORM NAVIGATION ---
@@ -133,10 +163,14 @@ function closeAllForms() {
   }
 }
 
-// Auto-populate time 
-// Calculates the exact hour difference between London and Singapore for a given date
+function openEditEvent() {
+  const eventsList = document.getElementById("upcoming-events-list");
+  if (eventsList) eventsList.classList.toggle("edit-mode");
+}
+
+// --- TIMEZONE AUTO-POPULATION & FORMATTING ---
 function getUktToSgtOffset(dateStr) {
-  if (!dateStr) return 7; // Default to BST (+7h) if no date is picked yet
+  if (!dateStr) return 7;
   
   const [y, m, d] = dateStr.split('-').map(Number);
   const testDate = new Date(y, m - 1, d);
@@ -150,7 +184,6 @@ function getUktToSgtOffset(dateStr) {
   }
 }
 
-// Typing or picking UKT auto-fills SGT
 function syncTimeFromUKT(prefix) {
   const dateVal = document.getElementById(`${prefix}-date`)?.value;
   const uktElem = document.getElementById(`${prefix}-time-ukt`);
@@ -165,7 +198,6 @@ function syncTimeFromUKT(prefix) {
   sgtElem.value = `${String(sgtHours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
 }
 
-// Typing or picking SGT auto-fills UKT
 function syncTimeFromSGT(prefix) {
   const dateVal = document.getElementById(`${prefix}-date`)?.value;
   const uktElem = document.getElementById(`${prefix}-time-ukt`);
@@ -180,8 +212,6 @@ function syncTimeFromSGT(prefix) {
   uktElem.value = `${String(uktHours).padStart(2, '0')}:${String(mins).padStart(2, '0')}`;
 }
 
-
-// Convert 24h string to 12h AM/PM
 function format12Hour(timeStr) {
   if (!timeStr) return "";
   let [h, m] = timeStr.split(':').map(Number);
@@ -190,7 +220,6 @@ function format12Hour(timeStr) {
   return `${h}:${String(m).padStart(2, '0')}${ampm}`;
 }
 
-// Convert YYYY-MM-DD to "2nd November 2026"
 function formatHumanDate(dateStr) {
   if (!dateStr) return "";
   const [year, month, day] = dateStr.split('-').map(Number);
@@ -206,16 +235,19 @@ function formatHumanDate(dateStr) {
   return `${getOrdinal(day)} ${monthName} ${year}`;
 }
 
-// SAVE DATA TO SHEETDB
+// --- SAVE ACTIVITY TO DATABASE ---
 async function saveNewActivity(e, eventType) {
   e.preventDefault();
 
   let name = "", date = "", uktTime = "", points = 0;
 
   if (eventType === 'Book Club') {
-    name = document.getElementById("book-name").value;
+    const bookTitle = document.getElementById("book-name").value;
+    const bookAuthor = document.getElementById("book-author").value;
+    name = bookAuthor ? `${bookTitle}|${bookAuthor}` : bookTitle;
     date = document.getElementById("book-date").value;
     uktTime = document.getElementById("book-time-ukt").value;
+    points = 10;
   } else if (eventType === 'Competition') {
     name = document.getElementById("comp-name").value;
     date = document.getElementById("comp-date").value;
@@ -247,6 +279,7 @@ async function saveNewActivity(e, eventType) {
     if (response.ok) {
       closeAllForms();
       loadEvents();
+      loadBooks();
     } else {
       alert("Error saving activity.");
     }
@@ -256,10 +289,80 @@ async function saveNewActivity(e, eventType) {
   }
 }
 
-// DISPLAY UPCOMING EVENTS (Matches Screenshot 18)
+// --- FETCH & LOAD BOOKS ---
+async function loadBooks() {
+  const booksList = document.getElementById("books-list");
+  if (!booksList) return;
+
+  booksList.innerHTML = "<p style='text-align:center; font-size:12px; color:#888;'>Loading books...</p>";
+
+  try {
+    const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
+    const data = await response.json();
+
+    const bookEvents = data.filter(row => 
+      row.event_type && row.event_type.toLowerCase().includes("book")
+    );
+
+    if (bookEvents.length === 0) {
+      booksList.innerHTML = "<p style='text-align:center; font-size:13px; color:#888; margin-top:20px;'>No books added yet.</p>";
+      return;
+    }
+
+    booksList.innerHTML = "";
+
+    bookEvents.forEach(row => {
+      let title = row.event_name;
+      let author = "Unknown Author";
+
+      if (row.event_name.includes("|")) {
+        const parts = row.event_name.split("|");
+        title = parts[0].trim();
+        author = parts[1].trim();
+      }
+
+      const isCompleted = row.winner && row.winner.trim() !== "";
+      const ratingStatus = isCompleted ? "Completed" : "Not Rated Yet";
+
+      const cardHTML = `
+        <div class="book-card">
+          <div class="book-cover placeholder-cover"></div>
+          
+          <div class="book-info">
+            <div class="book-header-row">
+              <h4>${title}</h4>
+              <i class="fa-solid fa-pen-to-square edit-book-icon" onclick="openEditEvent()"></i>
+            </div>
+            <p class="book-author">${author}</p>
+            
+            <div class="rating-row">
+              <span class="profile-dot dot-pink"></span>
+              <span class="unrated-text">${ratingStatus}</span>
+            </div>
+            <div class="rating-row">
+              <span class="profile-dot dot-purple"></span>
+              <span class="unrated-text">${ratingStatus}</span>
+            </div>
+
+            <button class="view-book-btn">VIEW</button>
+          </div>
+        </div>
+      `;
+      booksList.innerHTML += cardHTML;
+    });
+
+  } catch (error) {
+    console.error("Error loading books:", error);
+    booksList.innerHTML = "<p style='color:red; text-align:center; font-size:12px;'>Failed to load books.</p>";
+  }
+}
+
+// --- DISPLAY UPCOMING EVENTS ---
 async function loadEvents() {
   const eventsList = document.getElementById("upcoming-events-list");
   if (!eventsList) return;
+
+  eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
 
   try {
     const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
@@ -277,18 +380,25 @@ async function loadEvents() {
 
     activeEvents.forEach((row) => {
       const safeName = encodeURIComponent(row.event_name);
+
+      let displayTitle = row.event_name;
+      if (displayTitle.includes("|")) {
+        displayTitle = displayTitle.split("|")[0].trim();
+      }
+
       const isBook = (row.event_type || "").toLowerCase().includes("book");
       const actionLabel = isBook ? "Review" : "Claim";
       
       const humanDate = formatHumanDate(row.date);
 
-      // Derive UKT and SGT times
       let uktTimeFormatted = "";
       let sgtTimeFormatted = "";
       if (row.time) {
         const [h, m] = row.time.split(':').map(Number);
         uktTimeFormatted = format12Hour(row.time);
-        const sgtH = (h + 7) % 24;
+        
+        const offset = getUktToSgtOffset(row.date);
+        const sgtH = (h + offset) % 24;
         sgtTimeFormatted = format12Hour(`${sgtH}:${m}`);
       }
 
@@ -299,7 +409,7 @@ async function loadEvents() {
           </button>
           
           <div class="event-card-left">
-            <h4>${row.event_name}</h4>
+            <h4>${displayTitle}</h4>
             <div class="event-date-text">${humanDate}</div>
             <div class="tz-container">
               <span class="tz-badge tz-ukt">${uktTimeFormatted} UKT</span>
@@ -319,58 +429,6 @@ async function loadEvents() {
   } catch (error) {
     console.error("Error fetching events:", error);
     eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
-  }
-}
-
-// Updated loadEvents 
-async function loadEvents() {
-  const eventsList = document.getElementById("upcoming-events-list");
-  if (eventsList) eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
-
-  try {
-    const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
-    const data = await response.json();
-
-    // Update the Our Stats numbers using the fetched database records
-    updateStats(data);
-
-    if (!eventsList) return;
-    eventsList.innerHTML = "";
-
-    const activeEvents = data.filter(row => !row.winner || row.winner.trim() === "");
-
-    if (activeEvents.length === 0) {
-      eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>No upcoming events.</p>";
-      return;
-    }
-
-    activeEvents.forEach((row) => {
-      const safeName = encodeURIComponent(row.event_name);
-      const actionLabel = (row.event_type || "").toLowerCase().includes("book") ? "Review" : "Claim";
-      const tzBadgesHTML = formatDualTimezones(row.date, row.time, row.timezone);
-
-      const cardHTML = `
-        <div class="event-card">
-          <button class="delete-btn" onclick="deleteEvent('${safeName}')">
-            <i class="fa-solid fa-trash"></i>
-          </button>
-          
-          <div class="event-details">
-            <h4>${row.event_name}</h4>
-            <p>${row.date}</p>
-            ${tzBadgesHTML}
-          </div>
-          
-          <button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">${actionLabel}</button>
-          <i class="fa-solid fa-pen-to-square" style="color: #8da9ee; margin-left: 10px; cursor: pointer;"></i>
-        </div>
-      `;
-      eventsList.innerHTML += cardHTML;
-    });
-
-  } catch (error) {
-    console.error("Error fetching events:", error);
-    if (eventsList) eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
   }
 }
 
@@ -400,7 +458,7 @@ function startCountdown() {
   }, 1000);
 }
 
-// --- DATABASE LOGIC (SHEETDB) ---
+// --- DATABASE: SCORES & EVENTS ---
 async function loadScores() {
   try {
     const response = await fetch(`${SHEETDB_URL}?sheet=Scores`);
@@ -418,172 +476,73 @@ async function loadScores() {
   }
 }
 
-async function saveEvent(event) {
-  event.preventDefault(); 
-  
-  const btn = document.getElementById("submit-event-btn");
-  btn.innerText = "Saving...";
-  btn.disabled = true;
-
-  const newRowData = {
-    date: document.getElementById("event-date").value,
-    time: document.getElementById("event-time").value,
-    timezone: document.getElementById("event-timezone").value,
-    event_name: document.getElementById("event-name").value,
-    event_type: document.getElementById("event-type").value,
-    points_worth: document.getElementById("event-points").value,
-    winner: "" 
-  };
+async function deleteEvent(eventName) {
+  if (!confirm(`Are you sure you want to delete this event?`)) return;
 
   try {
-    const response = await fetch(`${SHEETDB_URL}?sheet=Events`, {
-      method: "POST",
+    const response = await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
+      method: "DELETE",
+      headers: { "Accept": "application/json" }
+    });
+
+    if (response.ok) {
+      loadEvents();
+    } else {
+      alert("Failed to delete. Check your connection.");
+    }
+  } catch (error) {
+    console.error("Error deleting event:", error);
+  }
+}
+
+async function claimPoints(eventName, pointsWorth, btnElement) {
+  if (!confirm(`Claim ${pointsWorth} points for ${currentSelectedProfile}?`)) return;
+
+  btnElement.innerText = "Claiming...";
+  btnElement.disabled = true;
+
+  try {
+    await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
+      method: "PATCH",
       headers: {
         "Accept": "application/json",
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ data: [newRowData] }) 
+      body: JSON.stringify({ data: { winner: currentSelectedProfile } })
     });
 
-    if (response.ok) {
-      document.getElementById("add-event-form").reset();
-      closeAddEvent();
-    } else {
-      alert("Failed to save. Check your connection.");
+    const scoreRes = await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`);
+    const scoreData = await scoreRes.json();
+    
+    let currentScore = 0;
+    if (scoreData && scoreData.length > 0) {
+      currentScore = parseInt(scoreData[0].score) || 0;
     }
+    
+    const newScore = currentScore + parseInt(pointsWorth);
+
+    await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`, {
+      method: "PATCH",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ data: { score: newScore } })
+    });
+
+    loadScores();
+    loadEvents(); 
+    
   } catch (error) {
-    console.error("Error saving event:", error);
-    alert("Error connecting to database.");
-  } finally {
-    btn.innerText = "Save Event";
-    btn.disabled = false;
+    console.error("Error claiming points:", error);
+    alert("Something went wrong updating the database.");
+    btnElement.innerText = "Claim";
+    btnElement.disabled = false;
   }
 }
 
-async function loadEvents() {
-    const eventsList = document.getElementById("upcoming-events-list");
-    eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
-  
-    try {
-      const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
-      const data = await response.json();
-  
-      eventsList.innerHTML = ""; // Clear loading text
-  
-      // Filter to only show events that don't have a winner yet
-      const activeEvents = data.filter(row => row.winner === "");
-  
-      if (activeEvents.length === 0) {
-        eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>No upcoming events.</p>";
-        return;
-      }
-  
-      // Loop through the data and build a card for each event
-      activeEvents.forEach((row, index) => {
-        // Note: use the index or a unique ID to know which row to delete/update later
-        const safeName = encodeURIComponent(row.event_name);
-        const cardHTML = `
-          <div class="event-card">
-            <button class="delete-btn" onclick="deleteEvent('${safeName}')">
-              <i class="fa-solid fa-trash"></i>
-            </button>
-            
-            <div class="event-details">
-              <h4>${row.event_name} <span class="points-badge">+${row.points_worth} pts</span></h4>
-              <p>${row.date} @ ${row.time} (${row.timezone})</p>
-            </div>
-            
-            <button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">Claim</button>
-          </div>
-        `;
-        eventsList.innerHTML += cardHTML;
-      });
-  
-    } catch (error) {
-      console.error("Error fetching events:", error);
-      eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
-    }
-  }
-  
-// --- DATABASE: DELETE EVENT ---
-async function deleteEvent(eventName) {
-    // Adds a safety check so you don't accidentally delete something
-    if (!confirm(`Are you sure you want to delete "${eventName}"?`)) return;
-  
-    try {
-      // Tells SheetDB to find the row where event_name matches, and delete it
-      const response = await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
-        method: "DELETE",
-        headers: { "Accept": "application/json" }
-      });
-  
-      if (response.ok) {
-        loadEvents(); // Instantly reloads the dashboard to remove the card
-      } else {
-        alert("Failed to delete. Check your connection.");
-      }
-    } catch (error) {
-      console.error("Error deleting event:", error);
-    }
-  }
-  
-  // --- DATABASE: CLAIM POINTS ---
-  async function claimPoints(eventName, pointsWorth, btnElement) {
-    // Verifies you are assigning the points to the person currently logged in
-    if (!confirm(`Claim ${pointsWorth} points for ${currentSelectedProfile}?`)) return;
-  
-    // Visual feedback while the database updates
-    btnElement.innerText = "Claiming...";
-    btnElement.disabled = true;
-  
-    try {
-      // STEP 1: Update the Events sheet to mark the as the winner
-      await fetch(`${SHEETDB_URL}/event_name/${eventName}?sheet=Events`, {
-        method: "PATCH",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ data: { winner: currentSelectedProfile } })
-      });
-  
-      // STEP 2: Fetch the current score from the Scores tab
-      const scoreRes = await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`);
-      const scoreData = await scoreRes.json();
-      
-      let currentScore = 0;
-      if (scoreData && scoreData.length > 0) {
-        currentScore = parseInt(scoreData[0].score) || 0;
-      }
-      
-      // Calculate the new total
-      const newScore = currentScore + parseInt(pointsWorth);
-  
-      // STEP 3: Save the new total score back to the Scores tab
-      await fetch(`${SHEETDB_URL}/profile/${currentSelectedProfile}?sheet=Scores`, {
-        method: "PATCH",
-        headers: {
-          "Accept": "application/json",
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ data: { score: newScore } })
-      });
-  
-      // STEP 4: Refresh the UI to show the new score and remove the claimed event
-      loadScores();
-      loadEvents(); 
-      
-    } catch (error) {
-      console.error("Error claiming points:", error);
-      alert("Something went wrong updating the database.");
-      btnElement.innerText = "Claim";
-      btnElement.disabled = false;
-    }
-  }
-
-  // --- CALCULATE OUR STATS ---
+// --- CALCULATE OUR STATS ---
 function updateStats(eventsData = []) {
-  // 1. Calculate Days Apart starting from 12 Sep 2026
   const startDate = new Date(2026, 8, 2);
   const today = new Date();
   const diffTime = Math.max(0, today - startDate);
@@ -592,12 +551,10 @@ function updateStats(eventsData = []) {
   const daysElem = document.getElementById("stat-days-apart");
   if (daysElem) daysElem.innerText = diffDays;
 
-  // 2. Count completed dates (events where winner is logged)
   const completedEvents = eventsData.filter(row => row.winner && row.winner.trim() !== "");
   const datesElem = document.getElementById("stat-dates-count");
   if (datesElem) datesElem.innerText = completedEvents.length;
 
-  // 3. Count completed books (completed events matching "Book" or "Book Club")
   const completedBooks = completedEvents.filter(row => {
     const type = (row.event_type || "").toLowerCase();
     const name = (row.event_name || "").toLowerCase();
