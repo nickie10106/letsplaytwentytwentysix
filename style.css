@@ -642,3 +642,108 @@
 
 .tz-ukt { background-color: #d8cdfa; color: #432e8a; }
 .tz-sgt { background-color: #fbd6e8; color: #812553; }
+
+/* --- Fix Generic Button Style Bleed --- */
+.bottom-nav button {
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+}
+
+/* --- Fixed Bottom Navigation Bar --- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  height: 65px;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 200;
+  padding: 0 10px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.08);
+}
+
+.nav-item {
+  font-size: 24px;
+  color: #f7a8be; /* Soft pink icon outline */
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.nav-center-btn {
+  width: 52px;
+  height: 52px;
+  background-color: #f7b0b7 !important; /* Elevated center pink button */
+  border: 3px solid #ffffff !important;
+  border-radius: 50% !important;
+  color: #ffffff !important;
+  font-size: 22px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -28px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+}
+
+/* --- Our Stats Cards --- */
+.stats-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 90px; /* Space above fixed bottom bar */
+}
+
+.stat-card {
+  flex: 1;
+  height: 90px;
+  border-radius: 16px;
+  border: 1px solid #000000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  text-align: center;
+  line-height: 1.2;
+  box-shadow: 1px 3px 6px rgba(0,0,0,0.08);
+}
+
+.stat-green  { background-color: #badcc2; }
+.stat-pink   { background-color: #f7c3c3; }
+.stat-yellow { background-color: #fcebc4; }
+
+.stat-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.stat-number {
+  font-size: 22px;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 4px;
+  color: #000;
+}
+
+.stat-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-align: center;
+  line-height: 1.1;
+  color: #222;
+}

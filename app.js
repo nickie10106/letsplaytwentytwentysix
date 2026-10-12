@@ -76,6 +76,7 @@ function showDashboard(profileName) {
   mainView.classList.add("active");
   
   startCountdown();
+  updateStats(); // Runs day counter immediately
   loadScores();
   loadEvents();
 }
@@ -133,17 +134,22 @@ function formatDualTimezones(dateStr, timeStr, baseTz) {
   `;
 }
 
-// Updated loadEvents rendering matching Home.png
+// Updated loadEvents 
 async function loadEvents() {
   const eventsList = document.getElementById("upcoming-events-list");
-  eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
+  if (eventsList) eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
 
   try {
     const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
     const data = await response.json();
+
+    // Update the Our Stats numbers using the fetched database records
+    updateStats(data);
+
+    if (!eventsList) return;
     eventsList.innerHTML = "";
 
-    const activeEvents = data.filter(row => !row.winner);
+    const activeEvents = data.filter(row => !row.winner || row.winner.trim() === "");
 
     if (activeEvents.length === 0) {
       eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>No upcoming events.</p>";
@@ -152,7 +158,7 @@ async function loadEvents() {
 
     activeEvents.forEach((row) => {
       const safeName = encodeURIComponent(row.event_name);
-      const actionLabel = row.event_type === "Book Club" ? "Review" : "Claim";
+      const actionLabel = (row.event_type || "").toLowerCase().includes("book") ? "Review" : "Claim";
       const tzBadgesHTML = formatDualTimezones(row.date, row.time, row.timezone);
 
       const cardHTML = `
@@ -176,7 +182,7 @@ async function loadEvents() {
 
   } catch (error) {
     console.error("Error fetching events:", error);
-    eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
+    if (eventsList) eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
   }
 }
 
@@ -386,3 +392,30 @@ async function deleteEvent(eventName) {
       btnElement.disabled = false;
     }
   }
+
+  // --- CALCULATE OUR STATS ---
+function updateStats(eventsData = []) {
+  // 1. Calculate Days Apart starting from 12 Sep 2026
+  const startDate = new Date("2026-09-12T00:00:00");
+  const today = new Date();
+  const diffTime = Math.max(0, today - startDate);
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  const daysElem = document.getElementById("stat-days-apart");
+  if (daysElem) daysElem.innerText = diffDays;
+
+  // 2. Count completed dates (events where winner is logged)
+  const completedEvents = eventsData.filter(row => row.winner && row.winner.trim() !== "");
+  const datesElem = document.getElementById("stat-dates-count");
+  if (datesElem) datesElem.innerText = completedEvents.length;
+
+  // 3. Count completed books (completed events matching "Book" or "Book Club")
+  const completedBooks = completedEvents.filter(row => {
+    const type = (row.event_type || "").toLowerCase();
+    const name = (row.event_name || "").toLowerCase();
+    return type.includes("book") || name.includes("book") || type.includes("read");
+  });
+
+  const booksElem = document.getElementById("stat-books-count");
+  if (booksElem) booksElem.innerText = completedBooks.length;
+}

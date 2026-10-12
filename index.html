@@ -93,15 +93,34 @@
   <hr>
 </div>
 
+<div class="section-header">
+  <h3>Our Stats</h3>
+  <hr>
+</div>
+
+<div class="section-header">
+  <h3>Our Stats</h3>
+  <hr>
+</div>
+
 <div class="stats-grid">
   <div class="stat-card stat-green">
-    <span>Days<br>Apart</span>
+    <div class="stat-content">
+      <span class="stat-number" id="stat-days-apart">0</span>
+      <span class="stat-label">Days<br>Apart</span>
+    </div>
   </div>
   <div class="stat-card stat-pink">
-    <span>Dates</span>
+    <div class="stat-content">
+      <span class="stat-number" id="stat-dates-count">0</span>
+      <span class="stat-label">Dates</span>
+    </div>
   </div>
   <div class="stat-card stat-yellow">
-    <span>Books</span>
+    <div class="stat-content">
+      <span class="stat-number" id="stat-books-count">0</span>
+      <span class="stat-label">Books</span>
+    </div>
   </div>
 </div>
 
@@ -110,7 +129,7 @@
   <h2 class="choose-title">Choose a Date</h2>
   <div class="category-list">
     <button class="category-btn" onclick="selectCategory('Book Club')">
-      <div class="cat-icon icon-blue"><i class="fa-solid fa-book-open"></i></div>
+      <div class="cat-icon icon-blue"><i class="fa-solid fa-book"></i></div>
       <span>Mixco Book Club</span>
     </button>
     <button class="category-btn" onclick="selectCategory('Max Vs Nicole')">
@@ -133,7 +152,7 @@
     <i class="fa-solid fa-plus"></i>
   </button>
   
-  <button class="nav-item"><i class="fa-regular fa-book-open"></i></button>
+  <button class="nav-item"><i class="fa-solid fa-book"></i></button>
   <button class="nav-item"><i class="fa-regular fa-calendar-check"></i></button>
 </nav>
   </div> <!-- CRITICAL FIX: This tag now correctly closes the main-view -->
