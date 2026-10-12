@@ -396,7 +396,7 @@ async function deleteEvent(eventName) {
   // --- CALCULATE OUR STATS ---
 function updateStats(eventsData = []) {
   // 1. Calculate Days Apart starting from 12 Sep 2026
-  const startDate = new Date("2026-09-12T00:00:00");
+  const startDate = new Date(2026, 8, 2);
   const today = new Date();
   const diffTime = Math.max(0, today - startDate);
   const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
