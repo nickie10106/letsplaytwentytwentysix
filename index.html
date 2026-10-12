@@ -87,21 +87,55 @@
       <div id="past-events-list" class="past-events-body"></div>
     </div>
 
-    <!-- Floating Action Menu Container -->
-    <div class="fab-container">
-      <div id="fab-menu" class="fab-menu">
-        <button class="fab-item" onclick="openEditEvent()" aria-label="Edit Events">
-          <i class="fa-solid fa-square-pen"></i>
-        </button>
-        <button class="fab-item" onclick="openAddEvent()" aria-label="Add Events">
-          <i class="fa-solid fa-calendar-plus"></i>
-        </button>
-      </div>
-      <button id="fab-main-btn" class="fab-button" onclick="toggleFab()">
-        <i class="fa-solid fa-plus"></i>
-      </button>
-    </div>
+    <!-- Inside <div id="main-view">: Add below #upcoming-events-list -->
+<div class="section-header">
+  <h3>Our Stats</h3>
+  <hr>
+</div>
 
+<div class="stats-grid">
+  <div class="stat-card stat-green">
+    <span>Days<br>Apart</span>
+  </div>
+  <div class="stat-card stat-pink">
+    <span>Dates</span>
+  </div>
+  <div class="stat-card stat-yellow">
+    <span>Books</span>
+  </div>
+</div>
+
+<!-- Add "Choose a Date" Activity Type View -->
+<div id="choose-date-view" class="view-container hidden">
+  <h2 class="choose-title">Choose a Date</h2>
+  <div class="category-list">
+    <button class="category-btn" onclick="selectCategory('Book Club')">
+      <div class="cat-icon icon-blue"><i class="fa-solid fa-book-open"></i></div>
+      <span>Mixco Book Club</span>
+    </button>
+    <button class="category-btn" onclick="selectCategory('Max Vs Nicole')">
+      <div class="cat-icon icon-yellow"><i class="fa-solid fa-bolt"></i></div>
+      <span>Max Vs Nicole</span>
+    </button>
+    <button class="category-btn" onclick="selectCategory('Chill Event')">
+      <div class="cat-icon icon-green"><i class="fa-regular fa-calendar-check"></i></div>
+      <span>Chill Event</span>
+    </button>
+  </div>
+</div>
+
+<!-- Fixed Bottom Navigation Bar -->
+<nav class="bottom-nav">
+  <button class="nav-item active"><i class="fa-regular fa-envelope"></i></button>
+  <button class="nav-item"><i class="fa-solid fa-bolt"></i></button>
+  
+  <button class="nav-center-btn" onclick="toggleAddScreen()">
+    <i class="fa-solid fa-plus"></i>
+  </button>
+  
+  <button class="nav-item"><i class="fa-regular fa-book-open"></i></button>
+  <button class="nav-item"><i class="fa-regular fa-calendar-check"></i></button>
+</nav>
   </div> <!-- CRITICAL FIX: This tag now correctly closes the main-view -->
 
   <!-- Add Event Screen -->

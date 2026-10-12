@@ -495,3 +495,150 @@
     opacity: 1;
     margin-right: 12px;
   }
+
+  /* --- Bottom Navigation Bar --- */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 400px;
+  height: 65px;
+  background-color: #ffffff;
+  border-top: 1px solid #e0e0e0;
+  border-radius: 20px 20px 0 0;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 200;
+  padding: 0 10px;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
+}
+
+.nav-item {
+  background: none;
+  border: none;
+  font-size: 22px;
+  color: #a8d5e2;
+  cursor: pointer;
+  padding: 10px;
+}
+
+.nav-center-btn {
+  width: 52px;
+  height: 52px;
+  background-color: #f7c3c3;
+  border: 3px solid #ffffff;
+  border-radius: 50%;
+  color: #ffffff;
+  font-size: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: -25px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.nav-center-btn:active {
+  transform: scale(0.92);
+}
+
+/* --- Our Stats Section --- */
+.stats-grid {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  margin-bottom: 90px; /* Leaves room above bottom nav */
+}
+
+.stat-card {
+  flex: 1;
+  height: 90px;
+  border-radius: 16px;
+  border: 1px solid #000;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+  font-size: 14px;
+  text-align: center;
+  box-shadow: 1px 3px 6px rgba(0,0,0,0.08);
+}
+
+.stat-green { background-color: #badcc2; }
+.stat-pink  { background-color: #f7c3c3; }
+.stat-yellow{ background-color: #fcebc4; }
+
+/* --- Choose a Date Overlay Screen --- */
+#choose-date-view {
+  padding-top: 120px;
+  min-height: 100vh;
+}
+
+.choose-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin-bottom: 30px;
+}
+
+.category-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.category-btn {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 30px;
+  padding: 8px 16px;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+  cursor: pointer;
+  width: 100%;
+}
+
+.category-btn span {
+  font-size: 16px;
+  font-weight: 700;
+  color: #666;
+  margin-left: 15px;
+}
+
+.cat-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 18px;
+}
+
+.icon-blue   { background-color: #8da9ee; }
+.icon-yellow { background-color: #eec143; }
+.icon-green  { background-color: #6ed39b; }
+
+/* --- Dual Timezone Badges --- */
+.tz-container {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.tz-badge {
+  font-size: 10px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 10px;
+}
+
+.tz-ukt { background-color: #d8cdfa; color: #432e8a; }
+.tz-sgt { background-color: #fbd6e8; color: #812553; }

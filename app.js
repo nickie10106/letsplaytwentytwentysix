@@ -81,41 +81,104 @@ function showDashboard(profileName) {
 }
 
 // --- FLOATING ACTION MENU ---
-function toggleFab() {
-  const menu = document.getElementById("fab-menu");
-  const mainBtn = document.getElementById("fab-main-btn");
-  
-  menu.classList.toggle("open");
-  mainBtn.classList.toggle("open");
+
+// Toggle between Dashboard and "Choose a Date" Activity Screen
+function toggleAddScreen() {
+  const mainView = document.getElementById("main-view");
+  const chooseView = document.getElementById("choose-date-view");
+
+  if (chooseView.classList.contains("hidden")) {
+    mainView.classList.add("hidden");
+    mainView.classList.remove("active");
+    chooseView.classList.remove("hidden");
+    chooseView.classList.add("active");
+  } else {
+    chooseView.classList.add("hidden");
+    chooseView.classList.remove("active");
+    mainView.classList.remove("hidden");
+    mainView.classList.add("active");
+  }
 }
-  
-function openAddEvent() {
-  toggleFab(); // Close the menu
-  
-  document.getElementById("main-view").classList.remove("active");
-  document.getElementById("main-view").classList.add("hidden");
+
+// Select category and open details form
+function selectCategory(categoryName) {
+  document.getElementById("choose-date-view").classList.add("hidden");
   
   const addView = document.getElementById("add-event-view");
   addView.classList.remove("hidden");
   addView.classList.add("active");
-}
-  
-function closeAddEvent() {
-  document.getElementById("add-event-view").classList.remove("active");
-  document.getElementById("add-event-view").classList.add("hidden");
-  
-  const mainView = document.getElementById("main-view");
-  mainView.classList.remove("hidden");
-  mainView.classList.add("active");
+
+  // Pre-fill event type select element
+  const typeSelect = document.getElementById("event-type");
+  if (typeSelect) typeSelect.value = categoryName;
 }
 
-function openEditEvent() {
-    toggleFab(); // Close the floating menu
-    
-    // Toggle the 'edit-mode' class on the events list container
-    const eventsList = document.getElementById("upcoming-events-list");
-    eventsList.classList.toggle("edit-mode");
+// Helper to calculate Dual Timezones (UKT/London & SGT/Singapore)
+function formatDualTimezones(dateStr, timeStr, baseTz) {
+  const [year, month, day] = dateStr.split('-');
+  const [hours, mins] = timeStr.split(':');
+  
+  // Convert based on Singapore (+8) or London (+0)
+  let baseOffset = baseTz === 'SG' ? 8 : 0;
+  let utcTime = new Date(Date.UTC(year, month - 1, day, hours - baseOffset, mins));
+
+  let uktStr = utcTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'Europe/London' });
+  let sgtStr = utcTime.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'Asia/Singapore' });
+
+  return `
+    <div class="tz-container">
+      <span class="tz-badge tz-ukt">${uktStr} UKT</span>
+      <span class="tz-badge tz-sgt">${sgtStr} SGT</span>
+    </div>
+  `;
+}
+
+// Updated loadEvents rendering matching Home.png
+async function loadEvents() {
+  const eventsList = document.getElementById("upcoming-events-list");
+  eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>Loading events...</p>";
+
+  try {
+    const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
+    const data = await response.json();
+    eventsList.innerHTML = "";
+
+    const activeEvents = data.filter(row => !row.winner);
+
+    if (activeEvents.length === 0) {
+      eventsList.innerHTML = "<p style='font-size: 12px; color: #888;'>No upcoming events.</p>";
+      return;
+    }
+
+    activeEvents.forEach((row) => {
+      const safeName = encodeURIComponent(row.event_name);
+      const actionLabel = row.event_type === "Book Club" ? "Review" : "Claim";
+      const tzBadgesHTML = formatDualTimezones(row.date, row.time, row.timezone);
+
+      const cardHTML = `
+        <div class="event-card">
+          <button class="delete-btn" onclick="deleteEvent('${safeName}')">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+          
+          <div class="event-details">
+            <h4>${row.event_name}</h4>
+            <p>${row.date}</p>
+            ${tzBadgesHTML}
+          </div>
+          
+          <button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">${actionLabel}</button>
+          <i class="fa-solid fa-pen-to-square" style="color: #8da9ee; margin-left: 10px; cursor: pointer;"></i>
+        </div>
+      `;
+      eventsList.innerHTML += cardHTML;
+    });
+
+  } catch (error) {
+    console.error("Error fetching events:", error);
+    eventsList.innerHTML = "<p style='font-size: 12px; color: red;'>Failed to load events.</p>";
   }
+}
 
 // --- COUNTDOWN LOGIC ---
 function startCountdown() {
