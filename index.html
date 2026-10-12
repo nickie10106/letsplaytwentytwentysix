@@ -37,42 +37,33 @@
   <!-- Main App Dashboard -->
   <div id="main-view" class="view-container dashboard-view hidden">
     
-<!-- Top Pink Card (Scoreboard) -->
-<div class="card pink-card">
-      
-    <!-- Left Image (Floats freely) -->
-    <img src="./img/1.png" alt="Big Dino" class="score-img-left" onerror="this.style.display='none'">
-
-    <!-- Centered Text Area -->
-    <div class="scoreboard-text">
-      <div class="score-column">
-        <div class="score-name">Big Dino</div>
-        <div class="score-points" id="score-M">0</div>
+    <!-- Top Pink Card (Scoreboard) -->
+    <div class="card pink-card">
+      <img src="./img/1.png" alt="Big Dino" class="score-img-left" onerror="this.style.display='none'">
+      <div class="scoreboard-text">
+        <div class="score-column">
+          <div class="score-name">Big Dino</div>
+          <div class="score-points" id="score-M">0</div>
+        </div>
+        <div class="vs-text">VS</div>
+        <div class="score-column">
+          <div class="score-name">Ginger</div>
+          <div class="score-points" id="score-N">0</div>
+        </div>
       </div>
-
-      <div class="vs-text">VS</div>
-
-      <div class="score-column">
-        <div class="score-name">Ginger</div>
-        <div class="score-points" id="score-N">0</div>
-      </div>
+      <img src="./img/2.png" alt="Ginger" class="score-img-right" onerror="this.style.display='none'">
     </div>
-
-    <!-- Right Image (Floats freely) -->
-    <img src="./img/2.png" alt="Ginger" class="score-img-right" onerror="this.style.display='none'">
-    
-  </div>
 
     <!-- Green Countdown Card -->
     <div class="card green-card">
-        <h3>Till the next time we're together.</h3>
-        <div id="countdown-display" style="font-size: 24px; font-weight: bold; margin-top: 10px; display: flex; justify-content: space-around;">
-          <div><span id="cd-days">00</span><div style="font-size: 12px; font-weight: normal;">Days</div></div>
-          <div><span id="cd-hours">00</span><div style="font-size: 12px; font-weight: normal;">Hours</div></div>
-          <div><span id="cd-minutes">00</span><div style="font-size: 12px; font-weight: normal;">Mins</div></div>
-          <div><span id="cd-seconds">00</span><div style="font-size: 12px; font-weight: normal;">Secs</div></div>
-        </div>
+      <h3>Till the next time we're together.</h3>
+      <div id="countdown-display" style="font-size: 24px; font-weight: bold; margin-top: 10px; display: flex; justify-content: space-around;">
+        <div><span id="cd-days">00</span><div style="font-size: 12px; font-weight: normal;">Days</div></div>
+        <div><span id="cd-hours">00</span><div style="font-size: 12px; font-weight: normal;">Hours</div></div>
+        <div><span id="cd-minutes">00</span><div style="font-size: 12px; font-weight: normal;">Mins</div></div>
+        <div><span id="cd-seconds">00</span><div style="font-size: 12px; font-weight: normal;">Secs</div></div>
       </div>
+    </div>
 
     <!-- Upcoming Events Section -->
     <div class="section-header">
@@ -81,185 +72,180 @@
     </div>
     <div id="upcoming-events-list" class="events-list"></div>
 
-    <!-- Inside <div id="main-view">: Add below #upcoming-events-list -->
-<div class="section-header">
-  <h3>Our Stats</h3>
-  <hr>
-</div>
+    <!-- Our Stats Section -->
+    <div class="section-header">
+      <h3>Our Stats</h3>
+      <hr>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card stat-green">
+        <div class="stat-content">
+          <span class="stat-number" id="stat-days-apart">0</span>
+          <span class="stat-label">Days<br>Apart</span>
+        </div>
+      </div>
+      <div class="stat-card stat-pink">
+        <div class="stat-content">
+          <span class="stat-number" id="stat-dates-count">0</span>
+          <span class="stat-label">Dates</span>
+        </div>
+      </div>
+      <div class="stat-card stat-yellow">
+        <div class="stat-content">
+          <span class="stat-number" id="stat-books-count">0</span>
+          <span class="stat-label">Books</span>
+        </div>
+      </div>
+    </div>
 
-<div class="stats-grid">
-  <div class="stat-card stat-green">
-    <div class="stat-content">
-      <span class="stat-number" id="stat-days-apart">0</span>
-      <span class="stat-label">Days<br>Apart</span>
+  </div> <!-- main-view closes cleanly here -->
+
+  <!-- Choose a Date Screen (Home-Add.png) -->
+  <div id="choose-date-view" class="view-container hidden">
+    <h2 class="choose-title">Choose a Date</h2>
+    <div class="category-list">
+      <button class="category-btn" onclick="openAddForm('book')">
+        <div class="cat-icon icon-blue"><i class="fa-solid fa-book-open"></i></div>
+        <span>Mixco Book Club</span>
+      </button>
+      <button class="category-btn" onclick="openAddForm('comp')">
+        <div class="cat-icon icon-yellow"><i class="fa-solid fa-bolt"></i></div>
+        <span>Max Vs Nicole</span>
+      </button>
+      <button class="category-btn" onclick="openAddForm('event')">
+        <div class="cat-icon icon-green"><i class="fa-regular fa-calendar-check"></i></div>
+        <span>Chill Event</span>
+      </button>
     </div>
   </div>
-  <div class="stat-card stat-pink">
-    <div class="stat-content">
-      <span class="stat-number" id="stat-dates-count">0</span>
-      <span class="stat-label">Dates</span>
+
+  <!-- 1. New Book Form -->
+  <div id="add-book-view" class="view-container form-screen hidden">
+    <div class="form-header header-blue">
+      <i class="fa-solid fa-book-open"></i>
+      <h2>New Book</h2>
     </div>
+    <form onsubmit="saveNewActivity(event, 'Book Club')">
+      <label>Book Name</label>
+      <input type="text" id="book-name" required>
+
+      <label>Book Author</label>
+      <input type="text" id="book-author" required>
+
+      <label>Date</label>
+      <input type="date" id="book-date" onchange="syncTimeFromUKT('book')" required>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>UKT</label>
+          <input type="time" id="book-time-ukt" oninput="syncTimeFromUKT('book')" onchange="syncTimeFromUKT('book')" required>
+        </div>
+        <div class="form-group">
+          <label>SGT</label>
+          <input type="time" id="book-time-sgt" oninput="syncTimeFromSGT('book')" onchange="syncTimeFromSGT('book')" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-form-add">ADD</button>
+      <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+    </form>
   </div>
-  <div class="stat-card stat-yellow">
-    <div class="stat-content">
-      <span class="stat-number" id="stat-books-count">0</span>
-      <span class="stat-label">Books</span>
+
+  <!-- 2. New Competition Form -->
+  <div id="add-comp-view" class="view-container form-screen hidden">
+    <div class="form-header header-yellow">
+      <i class="fa-solid fa-bolt"></i>
+      <h2>New Competition</h2>
     </div>
+    <form onsubmit="saveNewActivity(event, 'Competition')">
+      <label>Name</label>
+      <input type="text" id="comp-name" required>
+
+      <label>Date</label>
+      <input type="date" id="comp-date" onchange="syncTimeFromUKT('comp')" required>
+      
+      <div class="form-row">
+        <div class="form-group">
+          <label>UKT</label>
+          <input type="time" id="comp-time-ukt" oninput="syncTimeFromUKT('comp')" onchange="syncTimeFromUKT('comp')" required>
+        </div>
+        <div class="form-group">
+          <label>SGT</label>
+          <input type="time" id="comp-time-sgt" oninput="syncTimeFromSGT('comp')" onchange="syncTimeFromSGT('comp')" required>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group" style="flex: 2;">
+          <label>Difficulty Level</label>
+          <input type="text" id="comp-difficulty" placeholder="e.g. Medium">
+        </div>
+        <div class="form-group" style="flex: 1;">
+          <label>Points</label>
+          <input type="number" id="comp-points" min="0" value="10" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-form-add">ADD</button>
+      <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+    </form>
   </div>
-</div>
 
-<!-- Add "Choose a Date" Activity Type View -->
-<div id="choose-date-view" class="view-container hidden">
-  <h2 class="choose-title">Choose a Date</h2>
-  <div class="category-list">
-    <button class="category-btn" onclick="selectCategory('Book Club')">
-      <div class="cat-icon icon-blue"><i class="fa-solid fa-book"></i></div>
-      <span>Mixco Book Club</span>
-    </button>
-    <button class="category-btn" onclick="selectCategory('Max Vs Nicole')">
-      <div class="cat-icon icon-yellow"><i class="fa-solid fa-bolt"></i></div>
-      <span>Max Vs Nicole</span>
-    </button>
-    <button class="category-btn" onclick="selectCategory('Chill Event')">
-      <div class="cat-icon icon-green"><i class="fa-regular fa-calendar-check"></i></div>
-      <span>Chill Event</span>
-    </button>
+  <!-- 3. New Chill Event Form -->
+  <div id="add-event-view" class="view-container form-screen hidden">
+    <div class="form-header header-green">
+      <i class="fa-regular fa-calendar-check"></i>
+      <h2>New Event</h2>
+    </div>
+    <form onsubmit="saveNewActivity(event, 'Chill Event')">
+      <label>Name</label>
+      <input type="text" id="event-name" required>
+
+      <label>Date</label>
+      <input type="date" id="event-date" onchange="syncTimeFromUKT('event')" required>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>UKT</label>
+          <input type="time" id="event-time-ukt" oninput="syncTimeFromUKT('event')" onchange="syncTimeFromUKT('event')" required>
+        </div>
+        <div class="form-group">
+          <label>SGT</label>
+          <input type="time" id="event-time-sgt" oninput="syncTimeFromSGT('event')" onchange="syncTimeFromSGT('event')" required>
+        </div>
+      </div>
+
+      <button type="submit" class="btn-form-add">ADD</button>
+      <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+    </form>
   </div>
-</div>
 
-<!-- Fixed Bottom Navigation Bar -->
-<nav class="bottom-nav">
-  <button class="nav-item active"><i class="fa-regular fa-envelope"></i></button>
-  <button class="nav-item"><i class="fa-solid fa-bolt"></i></button>
-  
-  <button class="nav-center-btn" onclick="toggleAddScreen()">
-    <i class="fa-solid fa-plus"></i>
-  </button>
-  
-  <button class="nav-item"><i class="fa-solid fa-book"></i></button>
-  <button class="nav-item"><i class="fa-regular fa-calendar-check"></i></button>
-</nav>
-  </div> <!-- CRITICAL FIX: This tag now correctly closes the main-view -->
-
- <!-- Choose a Date Screen (Home-Add.png) -->
- <div id="choose-date-view" class="view-container hidden">
-  <h2 class="choose-title">Choose a Date</h2>
-  <div class="category-list">
-    <button class="category-btn" onclick="openAddForm('book')">
-      <div class="cat-icon icon-blue"><i class="fa-solid fa-book-open"></i></div>
-      <span>Mixco Book Club</span>
-    </button>
-    <button class="category-btn" onclick="openAddForm('comp')">
-      <div class="cat-icon icon-yellow"><i class="fa-solid fa-bolt"></i></div>
-      <span>Max Vs Nicole</span>
-    </button>
-    <button class="category-btn" onclick="openAddForm('event')">
-      <div class="cat-icon icon-green"><i class="fa-regular fa-calendar-check"></i></div>
-      <span>Chill Event</span>
-    </button>
+  <!-- Our Books View Screen -->
+  <div id="books-view" class="view-container hidden">
+    <div class="books-top-banner">
+      <button class="banner-home-btn" onclick="switchTab('home')">
+        <i class="fa-solid fa-house"></i>
+      </button>
+    </div>
+    <div class="section-header" style="width: 100%; margin-top: 25px;">
+      <h3>Our Books</h3>
+      <hr>
+    </div>
+    <div id="books-list" class="books-list-container"></div>
   </div>
-</div>
 
-<!-- 1. New Book Form  -->
-<div id="add-book-view" class="view-container form-screen hidden">
-  <div class="form-header header-blue">
-    <i class="fa-solid fa-book-open"></i>
-    <h2>New Book</h2>
-  </div>
-  <form onsubmit="saveNewActivity(event, 'Book Club')">
-    <label>Book Name</label>
-    <input type="text" id="book-name" required>
-
-    <label>Book Author</label>
-    <input type="text" id="book-author" required>
-
-    <label>Date</label>
-    <input type="date" id="book-date" onchange="syncTimeFromUKT('book')" required>
+  <!-- Fixed Bottom Navigation Bar -->
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="switchTab('home')"><i class="fa-regular fa-envelope"></i></button>
+    <button class="nav-item" onclick="switchTab('home')"><i class="fa-solid fa-bolt"></i></button>
     
-    <div class="form-row">
-      <div class="form-group">
-        <label>UKT</label>
-        <input type="time" id="book-time-ukt" oninput="syncTimeFromUKT('book')" onchange="syncTimeFromUKT('book')" required>
-      </div>
-      <div class="form-group">
-        <label>SGT</label>
-        <input type="time" id="book-time-sgt" oninput="syncTimeFromSGT('book')" onchange="syncTimeFromSGT('book')" required>
-      </div>
-    </div>
-
-    <button type="submit" class="btn-form-add">ADD</button>
-    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
-  </form>
-</div>
-
-<!-- 2. New Competition Form (AddComp.png) -->
-<div id="add-comp-view" class="view-container form-screen hidden">
-  <div class="form-header header-yellow">
-    <i class="fa-solid fa-bolt"></i>
-    <h2>New Competition</h2>
-  </div>
-  <form onsubmit="saveNewActivity(event, 'Competition')">
-    <label>Name</label>
-    <input type="text" id="comp-name" required>
-
-    <label>Date</label>
-    <input type="date" id="comp-date" onchange="syncTimeFromUKT('comp')" required>
+    <button class="nav-center-btn" onclick="toggleAddScreen()">
+      <i class="fa-solid fa-plus"></i>
+    </button>
     
-    <div class="form-row">
-      <div class="form-group">
-        <label>UKT</label>
-        <input type="time" id="comp-time-ukt" oninput="syncTimeFromUKT('comp')" onchange="syncTimeFromUKT('comp')" required>
-      </div>
-      <div class="form-group">
-        <label>SGT</label>
-        <input type="time" id="comp-time-sgt" oninput="syncTimeFromSGT('comp')" onchange="syncTimeFromSGT('comp')" required>
-      </div>
-    </div>
-
-    <div class="form-row">
-      <div class="form-group" style="flex: 2;">
-        <label>Difficulty Level</label>
-        <input type="text" id="comp-difficulty" placeholder="e.g. Medium">
-      </div>
-      <div class="form-group" style="flex: 1;">
-        <label>Points</label>
-        <input type="number" id="comp-points" min="0" value="10" required>
-      </div>
-    </div>
-
-    <button type="submit" class="btn-form-add">ADD</button>
-    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
-  </form>
-</div>
-
-<!-- 3. New Chill Event Form (AddEvent.png) -->
-<div id="add-event-view" class="view-container form-screen hidden">
-  <div class="form-header header-green">
-    <i class="fa-regular fa-calendar-check"></i>
-    <h2>New Event</h2>
-  </div>
-  <form onsubmit="saveNewActivity(event, 'Chill Event')">
-    <label>Name</label>
-    <input type="text" id="event-name" required>
-
-    <label>Date</label>
-<input type="date" id="event-date" onchange="syncTimeFromUKT('event')" required>
-
-<div class="form-row">
-  <div class="form-group">
-    <label>UKT</label>
-    <input type="time" id="event-time-ukt" oninput="syncTimeFromUKT('event')" onchange="syncTimeFromUKT('event')" required>
-  </div>
-  <div class="form-group">
-    <label>SGT</label>
-    <input type="time" id="event-time-sgt" oninput="syncTimeFromSGT('event')" onchange="syncTimeFromSGT('event')" required>
-  </div>
-</div>
-
-    <button type="submit" class="btn-form-add">ADD</button>
-    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
-  </form>
-</div>
+    <button class="nav-item" onclick="switchTab('books')"><i class="fa-solid fa-book"></i></button>
+    <button class="nav-item" onclick="switchTab('home')"><i class="fa-regular fa-calendar-check"></i></button>
+  </nav>
     
   <script src="app.js"></script>
 </body>

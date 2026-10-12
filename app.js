@@ -5,6 +5,8 @@ const PIN_M = "2003";
 const PIN_N = "2000";
 
 let currentSelectedProfile = "";
+let editingEventName = null; // Tracks if we are editing an existing event
+let allEventsCache = [];      // Caches database rows for quick editing
 
 // Check if logged in on load
 window.onload = () => {
@@ -111,7 +113,7 @@ function switchTab(tabName) {
   }
 }
 
-// --- FORM NAVIGATION ---
+// --- FORM NAVIGATION & EDITING ---
 function toggleAddScreen() {
   closeAllForms();
   const mainView = document.getElementById("main-view");
@@ -131,6 +133,10 @@ function toggleAddScreen() {
 }
 
 function openAddForm(type) {
+  if (!editingEventName) {
+    document.querySelectorAll('.form-screen form').forEach(f => f.reset());
+  }
+
   document.getElementById("choose-date-view").classList.add("hidden");
   document.getElementById("choose-date-view").classList.remove("active");
 
@@ -147,6 +153,9 @@ function openAddForm(type) {
 }
 
 function closeAllForms() {
+  editingEventName = null;
+  document.querySelectorAll('.form-screen form').forEach(f => f.reset());
+
   const formViews = ["choose-date-view", "add-book-view", "add-comp-view", "add-event-view"];
   formViews.forEach(id => {
     const elem = document.getElementById(id);
@@ -163,9 +172,50 @@ function closeAllForms() {
   }
 }
 
-function openEditEvent() {
-  const eventsList = document.getElementById("upcoming-events-list");
-  if (eventsList) eventsList.classList.toggle("edit-mode");
+// OPENS FILLED FORM FOR EDITING AN EVENT
+function editActivity(safeName) {
+  const originalName = decodeURIComponent(safeName);
+  const row = allEventsCache.find(item => item.event_name === originalName);
+  if (!row) return;
+
+  editingEventName = originalName;
+  const typeLower = (row.event_type || "").toLowerCase();
+
+  if (typeLower.includes("book")) {
+    let title = row.event_name;
+    let author = row.author || "";
+
+    // Legacy fallback if author was previously saved with '|'
+    if (!author && row.event_name.includes("|")) {
+      const parts = row.event_name.split("|");
+      title = parts[0].trim();
+      author = parts[1].trim();
+    }
+
+    document.getElementById("book-name").value = title;
+    document.getElementById("book-author").value = author;
+    document.getElementById("book-date").value = row.date || "";
+    document.getElementById("book-time-ukt").value = row.time || "";
+    syncTimeFromUKT('book');
+
+    openAddForm('book');
+  } else if (typeLower.includes("comp")) {
+    document.getElementById("comp-name").value = row.event_name;
+    document.getElementById("comp-date").value = row.date || "";
+    document.getElementById("comp-time-ukt").value = row.time || "";
+    document.getElementById("comp-difficulty").value = row.difficulty || "";
+    document.getElementById("comp-points").value = row.points_worth || 10;
+    syncTimeFromUKT('comp');
+
+    openAddForm('comp');
+  } else {
+    document.getElementById("event-name").value = row.event_name;
+    document.getElementById("event-date").value = row.date || "";
+    document.getElementById("event-time-ukt").value = row.time || "";
+    syncTimeFromUKT('event');
+
+    openAddForm('event');
+  }
 }
 
 // --- TIMEZONE AUTO-POPULATION & FORMATTING ---
@@ -235,16 +285,15 @@ function formatHumanDate(dateStr) {
   return `${getOrdinal(day)} ${monthName} ${year}`;
 }
 
-// --- SAVE ACTIVITY TO DATABASE ---
+// --- SAVE OR UPDATE ACTIVITY IN DATABASE ---
 async function saveNewActivity(e, eventType) {
   e.preventDefault();
 
-  let name = "", date = "", uktTime = "", points = 0;
+  let name = "", date = "", uktTime = "", points = 0, author = "", difficulty = "";
 
   if (eventType === 'Book Club') {
-    const bookTitle = document.getElementById("book-name").value;
-    const bookAuthor = document.getElementById("book-author").value;
-    name = bookAuthor ? `${bookTitle}|${bookAuthor}` : bookTitle;
+    name = document.getElementById("book-name").value;
+    author = document.getElementById("book-author").value;
     date = document.getElementById("book-date").value;
     uktTime = document.getElementById("book-time-ukt").value;
     points = 10;
@@ -252,6 +301,7 @@ async function saveNewActivity(e, eventType) {
     name = document.getElementById("comp-name").value;
     date = document.getElementById("comp-date").value;
     uktTime = document.getElementById("comp-time-ukt").value;
+    difficulty = document.getElementById("comp-difficulty").value;
     points = document.getElementById("comp-points").value;
   } else {
     name = document.getElementById("event-name").value;
@@ -259,22 +309,35 @@ async function saveNewActivity(e, eventType) {
     uktTime = document.getElementById("event-time-ukt").value;
   }
 
-  const newRowData = {
+  const rowData = {
     date: date,
     time: uktTime,
     timezone: "LON",
     event_name: name,
     event_type: eventType,
     points_worth: points || 0,
-    winner: ""
+    winner: "",
+    author: author,
+    difficulty: difficulty
   };
 
   try {
-    const response = await fetch(`${SHEETDB_URL}?sheet=Events`, {
-      method: "POST",
-      headers: { "Accept": "application/json", "Content-Type": "application/json" },
-      body: JSON.stringify({ data: [newRowData] })
-    });
+    let response;
+
+    if (editingEventName) {
+      const safeTarget = encodeURIComponent(editingEventName);
+      response = await fetch(`${SHEETDB_URL}/event_name/${safeTarget}?sheet=Events`, {
+        method: "PATCH",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ data: rowData })
+      });
+    } else {
+      response = await fetch(`${SHEETDB_URL}?sheet=Events`, {
+        method: "POST",
+        headers: { "Accept": "application/json", "Content-Type": "application/json" },
+        body: JSON.stringify({ data: [rowData] })
+      });
+    }
 
     if (response.ok) {
       closeAllForms();
@@ -313,12 +376,13 @@ async function loadBooks() {
 
     bookEvents.forEach(row => {
       let title = row.event_name;
-      let author = "Unknown Author";
+      let author = row.author || "Unknown Author";
 
+      // Fallback for older pipe entries
       if (row.event_name.includes("|")) {
         const parts = row.event_name.split("|");
         title = parts[0].trim();
-        author = parts[1].trim();
+        if (!row.author) author = parts[1].trim();
       }
 
       const isCompleted = row.winner && row.winner.trim() !== "";
@@ -331,7 +395,7 @@ async function loadBooks() {
           <div class="book-info">
             <div class="book-header-row">
               <h4>${title}</h4>
-              <i class="fa-solid fa-pen-to-square edit-book-icon" onclick="openEditEvent()"></i>
+              <i class="fa-solid fa-pen-to-square edit-book-icon" onclick="editActivity('${encodeURIComponent(row.event_name)}')"></i>
             </div>
             <p class="book-author">${author}</p>
             
@@ -368,6 +432,7 @@ async function loadEvents() {
     const response = await fetch(`${SHEETDB_URL}?sheet=Events`);
     const data = await response.json();
 
+    allEventsCache = data;
     updateStats(data);
     eventsList.innerHTML = "";
 
@@ -386,9 +451,15 @@ async function loadEvents() {
         displayTitle = displayTitle.split("|")[0].trim();
       }
 
-      const isBook = (row.event_type || "").toLowerCase().includes("book");
-      const actionLabel = isBook ? "Review" : "Claim";
-      
+      const typeLower = (row.event_type || "").toLowerCase();
+      let actionButtonHTML = "";
+
+      if (typeLower.includes("book")) {
+        actionButtonHTML = `<button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth || 10}, this)">Review</button>`;
+      } else if (typeLower.includes("comp") || typeLower.includes("competition")) {
+        actionButtonHTML = `<button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">Claim</button>`;
+      }
+
       const humanDate = formatHumanDate(row.date);
 
       let uktTimeFormatted = "";
@@ -418,8 +489,8 @@ async function loadEvents() {
           </div>
           
           <div class="event-card-right">
-            <button class="claim-btn" onclick="claimPoints('${safeName}', ${row.points_worth}, this)">${actionLabel}</button>
-            <i class="fa-solid fa-pen-to-square edit-icon" onclick="openEditEvent()"></i>
+            ${actionButtonHTML}
+            <i class="fa-solid fa-pen-to-square edit-icon" onclick="editActivity('${safeName}')"></i>
           </div>
         </div>
       `;
