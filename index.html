@@ -81,12 +81,6 @@
     </div>
     <div id="upcoming-events-list" class="events-list"></div>
 
-    <!-- Past Events Card -->
-    <div class="card past-events-card">
-      <div class="past-events-header">Past Events</div>
-      <div id="past-events-list" class="past-events-body"></div>
-    </div>
-
     <!-- Inside <div id="main-view">: Add below #upcoming-events-list -->
 <div class="section-header">
   <h3>Our Stats</h3>
@@ -147,52 +141,125 @@
 </nav>
   </div> <!-- CRITICAL FIX: This tag now correctly closes the main-view -->
 
-  <!-- Add Event Screen -->
-  <div id="add-event-view" class="view-container hidden">
-    <div class="view-header">
-      <button class="back-btn" onclick="closeAddEvent()"><i class="fa-solid fa-chevron-left"></i> Back</button>
-      <h2>New Event</h2>
+ <!-- Choose a Date Screen (Home-Add.png) -->
+ <div id="choose-date-view" class="view-container hidden">
+  <h2 class="choose-title">Choose a Date</h2>
+  <div class="category-list">
+    <button class="category-btn" onclick="openAddForm('book')">
+      <div class="cat-icon icon-blue"><i class="fa-solid fa-book-open"></i></div>
+      <span>Mixco Book Club</span>
+    </button>
+    <button class="category-btn" onclick="openAddForm('comp')">
+      <div class="cat-icon icon-yellow"><i class="fa-solid fa-bolt"></i></div>
+      <span>Max Vs Nicole</span>
+    </button>
+    <button class="category-btn" onclick="openAddForm('event')">
+      <div class="cat-icon icon-green"><i class="fa-regular fa-calendar-check"></i></div>
+      <span>Chill Event</span>
+    </button>
+  </div>
+</div>
+
+<!-- 1. New Book Form  -->
+<div id="add-book-view" class="view-container form-screen hidden">
+  <div class="form-header header-blue">
+    <i class="fa-solid fa-book-open"></i>
+    <h2>New Book</h2>
+  </div>
+  <form onsubmit="saveNewActivity(event, 'Book Club')">
+    <label>Book Name</label>
+    <input type="text" id="book-name" required>
+
+    <label>Book Author</label>
+    <input type="text" id="book-author" required>
+
+    <label>Date</label>
+    <input type="date" id="book-date" onchange="syncTimeFromUKT('book')" required>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>UKT</label>
+        <input type="time" id="book-time-ukt" oninput="syncTimeFromUKT('book')" onchange="syncTimeFromUKT('book')" required>
+      </div>
+      <div class="form-group">
+        <label>SGT</label>
+        <input type="time" id="book-time-sgt" oninput="syncTimeFromSGT('book')" onchange="syncTimeFromSGT('book')" required>
+      </div>
     </div>
 
-    <form id="add-event-form" onsubmit="saveEvent(event)">
-      <label for="event-name">Event Name</label>
-      <input type="text" id="event-name" required placeholder="e.g. R Studio Comp">
+    <button type="submit" class="btn-form-add">ADD</button>
+    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+  </form>
+</div>
 
-      <label for="event-type">Event Type</label>
-      <select id="event-type" required>
-        <option value="Competition">Competition</option>
-        <option value="Lesson">Lesson</option>
-        <option value="Activity">Activity</option>
-      </select>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="event-date">Date</label>
-          <input type="date" id="event-date" required>
-        </div>
-        <div class="form-group">
-          <label for="event-time">Time</label>
-          <input type="time" id="event-time" required>
-        </div>
-      </div>
-
-      <div class="form-row">
-        <div class="form-group">
-          <label for="event-timezone">Timezone</label>
-          <select id="event-timezone" required>
-            <option value="SG">Singapore (SG)</option>
-            <option value="LON">London (LON)</option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="event-points">Points Worth</label>
-          <input type="number" id="event-points" required min="0" value="0">
-        </div>
-      </div>
-
-      <button type="submit" id="submit-event-btn" class="btn-primary w-100" style="margin-top: 20px;">Save Event</button>
-    </form>
+<!-- 2. New Competition Form (AddComp.png) -->
+<div id="add-comp-view" class="view-container form-screen hidden">
+  <div class="form-header header-yellow">
+    <i class="fa-solid fa-bolt"></i>
+    <h2>New Competition</h2>
   </div>
+  <form onsubmit="saveNewActivity(event, 'Competition')">
+    <label>Name</label>
+    <input type="text" id="comp-name" required>
+
+    <label>Date</label>
+    <input type="date" id="comp-date" onchange="syncTimeFromUKT('comp')" required>
+    
+    <div class="form-row">
+      <div class="form-group">
+        <label>UKT</label>
+        <input type="time" id="comp-time-ukt" oninput="syncTimeFromUKT('comp')" onchange="syncTimeFromUKT('comp')" required>
+      </div>
+      <div class="form-group">
+        <label>SGT</label>
+        <input type="time" id="comp-time-sgt" oninput="syncTimeFromSGT('comp')" onchange="syncTimeFromSGT('comp')" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group" style="flex: 2;">
+        <label>Difficulty Level</label>
+        <input type="text" id="comp-difficulty" placeholder="e.g. Medium">
+      </div>
+      <div class="form-group" style="flex: 1;">
+        <label>Points</label>
+        <input type="number" id="comp-points" min="0" value="10" required>
+      </div>
+    </div>
+
+    <button type="submit" class="btn-form-add">ADD</button>
+    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+  </form>
+</div>
+
+<!-- 3. New Chill Event Form (AddEvent.png) -->
+<div id="add-event-view" class="view-container form-screen hidden">
+  <div class="form-header header-green">
+    <i class="fa-regular fa-calendar-check"></i>
+    <h2>New Event</h2>
+  </div>
+  <form onsubmit="saveNewActivity(event, 'Chill Event')">
+    <label>Name</label>
+    <input type="text" id="event-name" required>
+
+    <label>Date</label>
+<input type="date" id="event-date" onchange="syncTimeFromUKT('event')" required>
+
+<div class="form-row">
+  <div class="form-group">
+    <label>UKT</label>
+    <input type="time" id="event-time-ukt" oninput="syncTimeFromUKT('event')" onchange="syncTimeFromUKT('event')" required>
+  </div>
+  <div class="form-group">
+    <label>SGT</label>
+    <input type="time" id="event-time-sgt" oninput="syncTimeFromSGT('event')" onchange="syncTimeFromSGT('event')" required>
+  </div>
+</div>
+
+    <button type="submit" class="btn-form-add">ADD</button>
+    <button type="button" class="btn-form-cancel" onclick="closeAllForms()">CANCEL</button>
+  </form>
+</div>
     
   <script src="app.js"></script>
 </body>

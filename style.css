@@ -250,29 +250,6 @@
     margin-bottom: 20px;
   }
   
-  /* --- Past Events Composite Card --- */
-  .past-events-card {
-    background-color: #fff;
-    padding: 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    text-align: left;
-    min-height: 180px;
-  }
-  
-  .past-events-header {
-    background-color: #fcebc4; /* Yellowish header */
-    padding: 10px 15px;
-    font-size: 14px;
-    font-weight: bold;
-    border-bottom: 1px solid #000;
-  }
-  
-  .past-events-body {
-    padding: 15px;
-  }
-  
   /* --- Floating Action Button (FAB) & Menu --- */
 .fab-container {
     position: fixed;
@@ -422,42 +399,147 @@
   }
 
   /* --- Upcoming Event Cards --- */
+/* --- Upcoming Event Card (Screenshot 18 Style) --- */
 .event-card {
-    display: flex;
-    align-items: center;
-    background-color: #fff;
-    border: 1px solid #000;
-    border-radius: 8px;
-    padding: 12px;
-    margin-bottom: 12px;
-    box-shadow: 1px 2px 4px rgba(0,0,0,0.05);
-    overflow: hidden; /* Keeps the sliding button neat */
-  }
-  
-  .event-details {
-    flex-grow: 1;
-    text-align: left;
-  }
-  
-  .event-details h4 {
-    font-size: 15px;
-    margin: 0 0 4px 0;
-  }
-  
-  .event-details p {
-    font-size: 12px;
-    color: #555;
-    margin: 0;
-  }
-  
-  .points-badge {
-    font-size: 11px;
-    background-color: #fcebc4;
-    padding: 2px 6px;
-    border-radius: 8px;
-    border: 1px solid #000;
-    margin-left: 5px;
-  }
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  border: 1px solid #f0f0f0;
+  position: relative;
+}
+
+.event-card-left {
+  text-align: left;
+  flex: 1;
+}
+
+.event-card-left h4 {
+  font-size: 16px;
+  font-weight: 800;
+  margin-bottom: 4px;
+  color: #000;
+}
+
+.event-date-text {
+  font-size: 13px;
+  color: #333;
+  font-weight: 500;
+  margin-bottom: 8px;
+}
+
+.tz-container {
+  display: flex;
+  gap: 8px;
+}
+
+.tz-badge {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 12px;
+}
+
+.tz-ukt { background-color: #c7bbf2; color: #000; }
+.tz-sgt { background-color: #f7d6e6; color: #000; }
+
+.event-card-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: space-between;
+  height: 100%;
+  gap: 12px;
+}
+
+.claim-btn {
+  background-color: #000;
+  color: #fff;
+  border: none;
+  padding: 8px 18px;
+  border-radius: 20px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.edit-icon {
+  font-size: 18px;
+  color: #8da9ee;
+  cursor: pointer;
+}
+
+/* --- Form Screen Layouts (AddBook, AddComp, AddEvent) --- */
+.form-screen {
+  padding-top: 60px;
+  max-width: 360px;
+  margin: 0 auto;
+}
+
+.form-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 25px;
+}
+
+.form-header i {
+  font-size: 24px;
+  margin-bottom: 6px;
+}
+
+.form-header h2 {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
+}
+
+.header-blue i, .header-blue h2 { color: #8cb2f2; }
+.header-yellow i, .header-yellow h2 { color: #f3c244; }
+.header-green i, .header-green h2 { color: #83dbab; }
+
+.form-screen input {
+  background-color: #ffffff;
+  border: 1px solid #eaeaea;
+  border-radius: 12px;
+  padding: 12px;
+  font-size: 15px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.03);
+}
+
+.btn-form-add {
+  background-color: #bce3c9;
+  color: #ffffff;
+  width: 100%;
+  padding: 14px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-top: 25px;
+  border: none;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
+
+.btn-form-cancel {
+  background-color: #ebc0c3;
+  color: #ffffff;
+  width: 100%;
+  padding: 14px;
+  border-radius: 25px;
+  font-size: 16px;
+  font-weight: 800;
+  letter-spacing: 1px;
+  margin-top: 12px;
+  border: none;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+  cursor: pointer;
+}
   
   /* --- Claim Button --- */
   .claim-btn {
